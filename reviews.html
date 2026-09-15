@@ -36,22 +36,58 @@
     <div class="container">
       <div class="section-title">
         <h1>Reviews &amp; Testimonials</h1>
-        <p>[Add testimonials here once programs begin. Only include organization/school names with permission.]</p>
+        <p>Testimonials will be added here once programs begin. Only names or organizations shared with permission will be published.</p>
       </div>
 
-      <div class="grid grid-3">
-        <div class="card">
-          <p>"[Testimonial quote goes here.]"</p>
-          <p><strong>— [Name / Organization, with permission]</strong></p>
+      <div class="section-title" style="margin-top:56px;">
+        <h2>Leave a Review</h2>
+        <p>Had a ScaleWise Education program at your school, library, or event? We'd love to hear about your experience.</p>
+      </div>
+
+      <form id="review-form" class="card" style="max-width:640px; margin:0 auto;" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="08ad688e-8ef3-434a-a8ae-1fd51e6462d1">
+        <input type="hidden" name="subject" value="New Review Submission — ScaleWise Education">
+        <div style="margin-bottom:16px;">
+          <label for="review-name"><strong>Name *</strong></label><br>
+          <input type="text" id="review-name" name="name" required style="width:100%; padding:10px; margin-top:6px;">
         </div>
-        <div class="card">
-          <p>"[Testimonial quote goes here.]"</p>
-          <p><strong>— [Name / Organization, with permission]</strong></p>
+        <div style="margin-bottom:16px;">
+          <label for="review-email"><strong>Email *</strong></label><br>
+          <input type="email" id="review-email" name="email" required style="width:100%; padding:10px; margin-top:6px;">
         </div>
-        <div class="card">
-          <p>"[Testimonial quote goes here.]"</p>
-          <p><strong>— [Name / Organization, with permission]</strong></p>
+        <div style="margin-bottom:16px;">
+          <label for="review-organization"><strong>Organization / School (optional)</strong></label><br>
+          <input type="text" id="review-organization" name="organization" style="width:100%; padding:10px; margin-top:6px;">
         </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-rating"><strong>Rating</strong></label><br>
+          <select id="review-rating" name="rating" style="width:100%; padding:10px; margin-top:6px;">
+            <option value="5">★★★★★ (5)</option>
+            <option value="4">★★★★☆ (4)</option>
+            <option value="3">★★★☆☆ (3)</option>
+            <option value="2">★★☆☆☆ (2)</option>
+            <option value="1">★☆☆☆☆ (1)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-message"><strong>Your Review *</strong></label><br>
+          <textarea id="review-message" name="message" rows="4" required style="width:100%; padding:10px; margin-top:6px;"></textarea>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label>
+            <input type="checkbox" name="permission" value="Yes, you may use my name/organization publicly">
+            I give ScaleWise Education permission to publish my name/organization with this review.
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+      </form>
+
+      <div id="review-confirmation" class="placeholder-note" hidden style="max-width:640px; margin:20px auto 0; text-align:center;">
+        Thank you for sharing your experience! Your review has been received.
+      </div>
+
+      <div id="review-error" class="placeholder-note" hidden style="max-width:640px; margin:20px auto 0; text-align:center; background-color:#fdecea; border-color:#e0a29a; color:#8a2c1f;">
+        Something went wrong submitting your review. Please try again or email us directly.
       </div>
     </div>
   </section>

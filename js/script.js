@@ -18,22 +18,24 @@ document.addEventListener('DOMContentLoaded', function () {
     }
   });
 
-  // Booking/contact form — submits to Web3Forms via fetch so we can show an inline confirmation
-  var bookingForm = document.getElementById('booking-form');
-  if (bookingForm) {
-    bookingForm.addEventListener('submit', function (e) {
+  // Web3Forms submission handler — reused for the booking form and the review form
+  function wireWeb3Form(formId, confirmationId, errorId) {
+    var form = document.getElementById(formId);
+    if (!form) return;
+
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      var confirmation = document.getElementById('booking-confirmation');
-      var error = document.getElementById('booking-error');
-      var submitButton = bookingForm.querySelector('button[type="submit"]');
+      var confirmation = document.getElementById(confirmationId);
+      var error = document.getElementById(errorId);
+      var submitButton = form.querySelector('button[type="submit"]');
 
       if (error) error.hidden = true;
       if (confirmation) confirmation.hidden = true;
       if (submitButton) submitButton.disabled = true;
 
-      fetch(bookingForm.action, {
+      fetch(form.action, {
         method: 'POST',
-        body: new FormData(bookingForm),
+        body: new FormData(form),
         headers: { Accept: 'application/json' },
       })
         .then(function (response) { return response.json(); })
@@ -43,7 +45,7 @@ document.addEventListener('DOMContentLoaded', function () {
               confirmation.hidden = false;
               confirmation.scrollIntoView({ behavior: 'smooth' });
             }
-            bookingForm.reset();
+            form.reset();
           } else if (error) {
             error.hidden = false;
             error.scrollIntoView({ behavior: 'smooth' });
@@ -60,4 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
   }
+
+  wireWeb3Form('booking-form', 'booking-confirmation', 'booking-error');
+  wireWeb3Form('review-form', 'review-confirmation', 'review-error');
 });

@@ -65,4 +65,5 @@ document.addEventListener('DOMContentLoaded', function () {
 
   wireWeb3Form('booking-form', 'booking-confirmation', 'booking-error');
   wireWeb3Form('review-form', 'review-confirmation', 'review-error');
+  wireWeb3Form('adoption-form', 'adoption-confirmation', 'adoption-error');
 });

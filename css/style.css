@@ -61,7 +61,7 @@ img { max-width: 100%; display: block; }
   align-items: center;
   justify-content: space-between;
   padding: 20px 40px;
-  max-width: 1500px;
+  width: 100%;
   margin: 0 auto;
   gap: 32px;
 }
@@ -229,6 +229,101 @@ img { max-width: 100%; display: block; }
   padding: 8px;
 }
 
+/* Adoption */
+.adoption-intro {
+  padding-bottom: 50px;
+}
+
+.adoption-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.adoption-card {
+  overflow: hidden;
+  background-color: var(--color-white);
+  border: 1px solid #e5e0d0;
+  border-radius: var(--radius);
+}
+
+.adoption-photo {
+  border-radius: 0;
+}
+
+.adoption-card-content {
+  padding: 22px;
+}
+
+.adoption-card h2 {
+  font-size: 1.45rem;
+  margin-bottom: 14px;
+}
+
+.animal-details {
+  margin: 0;
+}
+
+.animal-details div {
+  padding: 10px 0;
+  border-top: 1px solid #eee7d8;
+}
+
+.animal-details dt {
+  color: var(--color-primary-dark);
+  font-weight: 700;
+}
+
+.animal-details dd {
+  margin: 2px 0 0;
+}
+
+.adoption-form,
+.form-message {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.form-field {
+  margin-bottom: 18px;
+}
+
+.form-field label,
+.form-field input,
+.form-field select,
+.form-field textarea {
+  display: block;
+  width: 100%;
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  margin-top: 6px;
+  padding: 10px;
+  border: 1px solid #b9b2a2;
+  border-radius: 4px;
+  color: var(--color-text);
+  font: inherit;
+}
+
+.form-field input[type="file"] {
+  padding: 8px;
+  background-color: #faf8f2;
+}
+
+.form-field small {
+  display: block;
+  margin-top: 6px;
+  color: #665f52;
+}
+
+.form-error {
+  background-color: #fdecea;
+  border-color: #e0a29a;
+  color: #8a2c1f;
+}
+
 .educator-bio {
   display: flex;
   align-items: flex-start;
@@ -333,6 +428,7 @@ img { max-width: 100%; display: block; }
 /* Responsive */
 @media (max-width: 800px) {
   .grid-3, .grid-2 { grid-template-columns: 1fr; }
+  .adoption-grid { grid-template-columns: 1fr; }
   .photo-grid { grid-template-columns: repeat(2, 1fr); }
   .footer-grid { grid-template-columns: 1fr; }
 }

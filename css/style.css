@@ -118,6 +118,8 @@ img { max-width: 100%; display: block; }
   color: var(--color-gold);
   font-size: 1.6rem;
   cursor: pointer;
+  position: relative;
+  z-index: 1;
 }
 
 /* Buttons */
@@ -439,6 +441,22 @@ img { max-width: 100%; display: block; }
 }
 
 @media (max-width: 600px) {
+  .nav-wrapper {
+    min-height: 76px;
+    padding: 12px 20px;
+  }
+
+  .logo {
+    left: 20px;
+    gap: 6px;
+    font-size: 1rem;
+  }
+
+  .logo img {
+    width: 52px;
+    height: 52px;
+  }
+
   .hero {
     padding: 56px 20px;
   }

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reviews &amp; Testimonials | ScaleWise Education</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="stub-page">
+
+<header class="site-header">
+  <div class="nav-wrapper">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="ScaleWise Education logo" onerror="this.style.display='none'">
+      ScaleWise Education
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="programs.html">Programs</a></li>
+      <li><a href="species.html">Species</a></li>
+      <li><a href="conservation.html">Conservation</a></li>
+      <li><a href="animal-care.html">Animal Care</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="safety.html">Safety &amp; Policies</a></li>
+      <li><a href="contact.html">Book a Program</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section class="section">
+    <div class="container">
+      <div class="section-title">
+        <h1>Reviews &amp; Testimonials</h1>
+        <p>Testimonials will be added here once programs begin. Only names or organizations shared with permission will be published.</p>
+      </div>
+
+      <div class="section-title" style="margin-top:56px;">
+        <h2>Leave a Review</h2>
+        <p>Had a ScaleWise Education program at your school, library, or event? We'd love to hear about your experience.</p>
+      </div>
+
+      <form id="review-form" class="card" style="max-width:640px; margin:0 auto;" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="08ad688e-8ef3-434a-a8ae-1fd51e6462d1">
+        <input type="hidden" name="subject" value="New Review Submission — ScaleWise Education">
+        <div style="margin-bottom:16px;">
+          <label for="review-name"><strong>Name *</strong></label><br>
+          <input type="text" id="review-name" name="name" required style="width:100%; padding:10px; margin-top:6px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-email"><strong>Email *</strong></label><br>
+          <input type="email" id="review-email" name="email" required style="width:100%; padding:10px; margin-top:6px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-organization"><strong>Organization / School (optional)</strong></label><br>
+          <input type="text" id="review-organization" name="organization" style="width:100%; padding:10px; margin-top:6px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-rating"><strong>Rating</strong></label><br>
+          <select id="review-rating" name="rating" style="width:100%; padding:10px; margin-top:6px;">
+            <option value="5">★★★★★ (5)</option>
+            <option value="4">★★★★☆ (4)</option>
+            <option value="3">★★★☆☆ (3)</option>
+            <option value="2">★★☆☆☆ (2)</option>
+            <option value="1">★☆☆☆☆ (1)</option>
+          </select>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label for="review-message"><strong>Your Review *</strong></label><br>
+          <textarea id="review-message" name="message" rows="4" required style="width:100%; padding:10px; margin-top:6px;"></textarea>
+        </div>
+        <div style="margin-bottom:16px;">
+          <label>
+            <input type="checkbox" name="permission" value="Yes, you may use my name/organization publicly">
+            I give ScaleWise Education permission to publish my name/organization with this review.
+          </label>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+      </form>
+
+      <div id="review-confirmation" class="placeholder-note" hidden style="max-width:640px; margin:20px auto 0; text-align:center;">
+        Thank you for sharing your experience! Your review has been received.
+      </div>
+
+      <div id="review-error" class="placeholder-note" hidden style="max-width:640px; margin:20px auto 0; text-align:center; background-color:#fdecea; border-color:#e0a29a; color:#8a2c1f;">
+        Something went wrong submitting your review. Please try again or email us directly.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>&copy; 2026 ScaleWise Education. All rights reserved. | <a href="legal.html">Privacy Policy &amp; Terms</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

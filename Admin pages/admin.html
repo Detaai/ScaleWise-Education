@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ScaleWise Admin</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #f3f5ef;
+        font-family: Arial, sans-serif;
+        color: #1f2a1f;
+      }
+      .card {
+        width: min(420px, 90vw);
+        background: #ffffff;
+        border: 1px solid #dfe5d9;
+        border-radius: 12px;
+        box-shadow: 0 10px 30px rgba(18, 29, 20, 0.08);
+        padding: 32px;
+      }
+      h1 {
+        margin-top: 0;
+        margin-bottom: 12px;
+        font-size: 2rem;
+      }
+      p {
+        margin: 0 0 18px;
+        line-height: 1.5;
+      }
+      a.button {
+        display: inline-block;
+        background: #2f5d3a;
+        color: #fff;
+        text-decoration: none;
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      a.button:hover {
+        background: #244b2d;
+      }
+      .small {
+        font-size: 0.9rem;
+        color: #4a5d4a;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="card">
+      <h1>ScaleWise Admin</h1>
+      <p>The CMS is served by the local Express app. Open the admin login page to manage pages and content.</p>
+      <p><a class="button" href="http://localhost:3000/admin/login">Open Admin Login</a></p>
+      <p class="small">If the site is not running yet, start it with: npm start</p>
+    </main>
+  </body>
+</html>

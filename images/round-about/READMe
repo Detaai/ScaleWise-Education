@@ -1,0 +1,18 @@
+## Image Roundabout
+
+The Image Roundabout randomly selects animal images from the image files included with the project.
+
+Each animal can have multiple images stored in the project. The system assigns each image a number so it can randomly select from the available images.
+
+### How It Works
+
+1. Animal images are stored in the project's image files.
+2. Each available image is assigned an identifier/number.
+3. When the roundabout needs images, it first randomly selects animals.
+4. It then randomly selects an image belonging to each selected animal.
+5. The system keeps track of images that have already been selected so the same image is not used more than once in the same round.
+6. If there are not enough different animals available to fill all of the roundabout's image slots, the system randomly selects additional images from animals that have already been chosen.
+7. Duplicate images are still prevented, so every image displayed in a round is unique.
+8. The final images are placed into the roundabout in a random order.
+
+This gives the roundabout variety while trying to include different animals whenever possible. If there are not enough animals to fill every slot, it can use additional images from existing animals instead of leaving empty spaces.

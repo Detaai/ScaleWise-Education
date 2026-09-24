@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Adopt an Animal | ScaleWise Education</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body class="stub-page">
+
+<header class="site-header">
+  <div class="nav-wrapper">
+    <a href="index.html" class="logo">
+      <img src="images/logo.png" alt="ScaleWise Education logo" onerror="this.style.display='none'">
+      ScaleWise Education
+    </a>
+    <button class="nav-toggle" aria-label="Toggle navigation">&#9776;</button>
+    <ul class="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About Us</a></li>
+      <li><a href="programs.html">Programs</a></li>
+      <li><a href="species.html">Species</a></li>
+      <li><a href="conservation.html">Conservation</a></li>
+      <li><a href="animal-care.html">Animal Care</a></li>
+      <li><a href="faq.html">FAQ</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="reviews.html">Reviews</a></li>
+      <li><a href="safety.html">Safety &amp; Policies</a></li>
+      <li><a href="contact.html">Book a Program</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section class="section adoption-intro">
+    <div class="container">
+      <div class="section-title">
+        <h1>Adopt an Animal</h1>
+        <p>Give an animal in need a responsible, prepared home. Review each animal's care needs, then send us your enclosure setup with your application.</p>
+      </div>
+
+      <p class="placeholder-note"><strong>Before applying:</strong> Every adoption is reviewed individually. A complete, species-appropriate enclosure must be ready before an animal can go home.</p>
+
+      <div class="adoption-grid">
+        <article class="adoption-card">
+          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
+          <div class="adoption-card-content">
+            <h2>Available Animal 1</h2>
+            <dl class="animal-details">
+              <div><dt>Name</dt><dd>Add animal name</dd></div>
+              <div><dt>Species</dt><dd>Add species</dd></div>
+              <div><dt>Age</dt><dd>Add age</dd></div>
+              <div><dt>Eats</dt><dd>Add diet</dd></div>
+              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="adoption-card">
+          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
+          <div class="adoption-card-content">
+            <h2>Available Animal 2</h2>
+            <dl class="animal-details">
+              <div><dt>Name</dt><dd>Add animal name</dd></div>
+              <div><dt>Species</dt><dd>Add species</dd></div>
+              <div><dt>Age</dt><dd>Add age</dd></div>
+              <div><dt>Eats</dt><dd>Add diet</dd></div>
+              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
+            </dl>
+          </div>
+        </article>
+
+        <article class="adoption-card">
+          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
+          <div class="adoption-card-content">
+            <h2>Available Animal 3</h2>
+            <dl class="animal-details">
+              <div><dt>Name</dt><dd>Add animal name</dd></div>
+              <div><dt>Species</dt><dd>Add species</dd></div>
+              <div><dt>Age</dt><dd>Add age</dd></div>
+              <div><dt>Eats</dt><dd>Add diet</dd></div>
+              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
+            </dl>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section-alt">
+    <div class="container">
+      <div class="section-title">
+        <h2>Adoption Application</h2>
+        <p>Fields marked with * are required. Your tank setup photo is reviewed as part of the application.</p>
+      </div>
+
+      <form id="adoption-form" class="card adoption-form" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="access_key" value="08ad688e-8ef3-434a-a8ae-1fd51e6462d1">
+        <input type="hidden" name="subject" value="New Animal Adoption Application - ScaleWise Education">
+        <div class="form-field">
+          <label for="adopter-name"><strong>Your Name *</strong></label>
+          <input type="text" id="adopter-name" name="name" autocomplete="name" required>
+        </div>
+        <div class="form-field">
+          <label for="adopter-email"><strong>Email Address *</strong></label>
+          <input type="email" id="adopter-email" name="email" autocomplete="email" required>
+        </div>
+        <div class="form-field">
+          <label for="animal-name"><strong>Animal You Want to Adopt *</strong></label>
+          <select id="animal-name" name="animal_name" required>
+            <option value="">Select an animal</option>
+            <option value="Available Animal 1">Available Animal 1</option>
+            <option value="Available Animal 2">Available Animal 2</option>
+            <option value="Available Animal 3">Available Animal 3</option>
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="tank-photo"><strong>Photo of Your Tank Setup *</strong></label>
+          <input type="file" id="tank-photo" name="tank_photo" accept="image/*" required>
+          <small>Upload a clear photo showing the full enclosure setup.</small>
+        </div>
+        <div class="form-field">
+          <label for="adoption-message"><strong>Anything Else We Should Know?</strong></label>
+          <textarea id="adoption-message" name="message" rows="4" placeholder="Tell us about your experience with this species or your setup."></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Send Adoption Application</button>
+      </form>
+
+      <div id="adoption-confirmation" class="placeholder-note form-message" hidden>
+        Thank you. Your adoption application has been received, and we will be in touch after reviewing it.
+      </div>
+      <div id="adoption-error" class="placeholder-note form-message form-error" hidden>
+        Something went wrong sending your application. Please try again or email us directly.
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-bottom">
+      <p>&copy; 2026 ScaleWise Education. All rights reserved. | <a href="legal.html">Privacy Policy &amp; Terms</a></p>
+    </div>
+  </div>
+</footer>
+
+<script src="js/script.js"></script>
+</body>
+</html>

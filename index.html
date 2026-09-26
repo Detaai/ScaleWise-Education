@@ -6,6 +6,25 @@
 <title>ScaleWise Education | Reptile &amp; Conservation Education</title>
 <meta name="description" content="ScaleWise Education provides hands-on reptile and wildlife conservation education programs for kids, adults, schools, and groups.">
 <link rel="stylesheet" href="css/style.css">
+<style>
+  /* Image roundabout */
+  .round-about .photo-placeholder.has-image {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .round-about .photo-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: opacity 0.6s ease;
+  }
+
+  .round-about.fading .photo-placeholder img {
+    opacity: 0;
+  }
+</style>
 </head>
 <body>
 
@@ -88,13 +107,14 @@
         <h2>Meet Some of Our Animals</h2>
         <p>Our programs feature reptiles and other wildlife that help bring the lessons of conservation, biology, and responsible animal care to life.</p>
       </div>
-      <div class="photo-grid">
+
+      <!-- Image roundabout: add photos to images/round-about/Animal N/, then run images/round-about.py -->
+      <div class="photo-grid round-about" id="round-about" data-manifest="images/round-about/manifest.json" data-rotate-seconds="6">
         <div class="photo-placeholder">[Reptile Photo 1]</div>
         <div class="photo-placeholder">[Reptile Photo 2]</div>
         <div class="photo-placeholder">[Reptile Photo 3]</div>
         <div class="photo-placeholder">[Reptile Photo 4]</div>
       </div>
-      <p class="placeholder-note">Replace the boxes above with real photos in the /images folder (e.g. &lt;img src="images/reptile-1.jpg" alt="..."&gt;).</p>
     </div>
   </section>
 
@@ -138,5 +158,123 @@
 </footer>
 
 <script src="js/script.js"></script>
+<script>
+// ==================== IMAGE ROUNDABOUT ====================
+// Priority: maximum animal variety -> maximum image variety -> random order.
+(function () {
+  function shuffle(list) {
+    for (var i = list.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var temp = list[i];
+      list[i] = list[j];
+      list[j] = temp;
+    }
+    return list;
+  }
+
+  // Keeps track of used images between rounds so the roundabout keeps showing new ones.
+  function createImagePicker(animalImages) {
+    var animals = Object.keys(animalImages);
+    var unused = {};
+    var animalRound = [];
+    var lastAnimal = null;
+
+    // Put every image back into the pool, except ones already showing this round.
+    function refill(exclude) {
+      var anyLeft = false;
+      animals.forEach(function (animal) {
+        unused[animal] = shuffle(animalImages[animal].filter(function (src) {
+          return exclude.indexOf(src) === -1;
+        }));
+        if (unused[animal].length) anyLeft = true;
+      });
+      // Fewer unique images than slots: duplicates are unavoidable.
+      if (!anyLeft && exclude.length) refill([]);
+    }
+
+    // Every animal with unused images gets one turn (in random order) before any repeats.
+    function buildAnimalRound() {
+      animalRound = shuffle(animals.filter(function (animal) {
+        return unused[animal].length > 0;
+      }));
+      if (animalRound.length > 1 && animalRound[0] === lastAnimal) {
+        var swap = 1 + Math.floor(Math.random() * (animalRound.length - 1));
+        animalRound[0] = animalRound[swap];
+        animalRound[swap] = lastAnimal;
+      }
+    }
+
+    refill([]);
+
+    return function pickImages(count) {
+      var selected = [];
+      while (selected.length < count) {
+        if (!animalRound.length) buildAnimalRound();
+        if (!animalRound.length) {
+          refill(selected);
+          continue;
+        }
+        var animal = animalRound.shift();
+        selected.push({ animal: animal, src: unused[animal].pop() });
+        lastAnimal = animal;
+      }
+      return selected;
+    };
+  }
+
+  function startRoundAbout(grid) {
+    if (!grid) return;
+
+    var slots = grid.querySelectorAll('.photo-placeholder');
+    var rotateSeconds = parseFloat(grid.dataset.rotateSeconds) || 0;
+    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    fetch(grid.dataset.manifest)
+      .then(function (response) { return response.json(); })
+      .then(function (manifest) {
+        var animalImages = {};
+        Object.keys(manifest.animals || {}).forEach(function (animal) {
+          if (manifest.animals[animal].length) animalImages[animal] = manifest.animals[animal];
+        });
+        // No images yet: leave the placeholder boxes showing.
+        if (!Object.keys(animalImages).length) return;
+
+        var pickImages = createImagePicker(animalImages);
+
+        function showRound() {
+          pickImages(slots.length).forEach(function (pick, i) {
+            var slot = slots[i];
+            var img = slot.querySelector('img');
+            if (!img) {
+              img = document.createElement('img');
+              slot.textContent = '';
+              slot.classList.add('has-image');
+              slot.appendChild(img);
+            }
+            img.src = encodeURI(pick.src);
+            img.alt = 'Photo of ' + pick.animal + ', one of our program animals';
+          });
+        }
+
+        showRound();
+
+        if (rotateSeconds > 0 && !reduceMotion) {
+          setInterval(function () {
+            grid.classList.add('fading');
+            setTimeout(function () {
+              showRound();
+              grid.classList.remove('fading');
+            }, 600);
+          }, rotateSeconds * 1000);
+        }
+      })
+      .catch(function () {
+        // Manifest missing or unreadable: keep the placeholders.
+      });
+  }
+
+  startRoundAbout(document.getElementById('round-about'));
+})();
+</script>
 </body>
 </html>

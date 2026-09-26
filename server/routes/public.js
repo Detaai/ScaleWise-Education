@@ -24,17 +24,18 @@ function servePage(slug) {
 // Home page is served at both "/" and "/index.html" to match the original static URLs.
 router.get(['/', '/index.html'], servePage('home'));
 
+// Hidden admin shortcut: accessible only by direct URL and not in public navigation.
+router.get('/_admin', (req, res) => {
+  res.redirect('/admin/login');
+});
+
 // All other pages, keeping the original .html URLs so existing links keep working.
 router.get('/:slug.html', (req, res, next) => {
+  if (req.params.slug === '_admin') return next();
   const page = getPageBySlug(req.params.slug);
   if (!page || page.slug === 'home') return next();
   const sections = getSectionsForPage(page.id);
   res.send(renderPage(page, sections));
-});
-
-// Hidden admin shortcut: accessible only by direct URL and not in public navigation.
-router.get('/_admin', (req, res) => {
-  res.redirect('/admin/login');
 });
 
 module.exports = router;

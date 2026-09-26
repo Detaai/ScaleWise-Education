@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ScaleWise Admin</title>
+    <meta http-equiv="refresh" content="0; url=/_admin" />
     <style>
       body {
         margin: 0;
@@ -48,13 +49,16 @@
         color: #4a5d4a;
       }
     </style>
+    <script>
+      window.location.href = '/_admin';
+    </script>
   </head>
   <body>
     <main class="card">
       <h1>ScaleWise Admin</h1>
-      <p>The CMS is served by the local Express app. Open the admin login page to manage pages and content.</p>
-      <p><a class="button" href="http://localhost:3000/admin/login">Open Admin Login</a></p>
-      <p class="small">If the site is not running yet, start it with: npm start</p>
+      <p>Redirecting to the live admin route…</p>
+      <p><a class="button" href="/_admin">Open Admin</a></p>
+      <p class="small">If the site is not running the app backend, this path will not exist until the live server is deployed.</p>
     </main>
   </body>
 </html>

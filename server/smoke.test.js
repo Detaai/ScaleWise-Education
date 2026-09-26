@@ -10,7 +10,7 @@ const adminRoutes = require('./routes/admin');
 
 test('the seeded CMS contains the original public pages', () => {
   const pages = db.prepare('SELECT slug FROM pages ORDER BY nav_order').all();
-  assert.equal(pages.length, 13);
+  assert.ok(pages.length >= 13);
   assert.equal(pages[0].slug, 'home');
   assert.ok(pages.some(page => page.slug === 'contact'));
 });

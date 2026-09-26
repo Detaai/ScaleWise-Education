@@ -46,7 +46,7 @@ function adminLayout({ title, body, flash }) {
 </head>
 <body>
 <header class="admin-bar">
-  <div><a href="/admin">ScaleWise Admin</a><a href="/" target="_blank">View Site &#8599;</a></div>
+  <div><a href="/admin">ScaleWise Admin</a><a href="/admin/powerpoints">PowerPoints</a><a href="/" target="_blank">View Site &#8599;</a></div>
   <div><a href="/admin/account">Account</a>
     <form method="post" action="/admin/logout" style="display:inline"><button class="btn small secondary" type="submit">Log out</button></form>
   </div>

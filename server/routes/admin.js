@@ -1,15 +1,22 @@
 const express = require('express');
+const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
+const { spawn } = require('child_process');
 const multer = require('multer');
 const db = require('../db');
 const { requireAuth, findUserByUsername, verifyPassword, updatePassword } = require('../auth');
 const { adminLayout, escapeHtml } = require('../adminLayout');
 const { SPECS, SECTION_TYPES } = require('../sectionForms');
+const { streamPublishZip } = require('../publisher');
 
 const router = express.Router();
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'images', 'uploads');
+const POWERPOINT_DIR = path.join(__dirname, '..', '..', 'data', 'powerpoints');
+const ONLYOFFICE_URL = process.env.ONLYOFFICE_URL || 'http://localhost:8080';
+const ONLYOFFICE_DOCUMENT_URL_BASE = process.env.ONLYOFFICE_DOCUMENT_URL_BASE || 'http://host.docker.internal:3000';
+fs.mkdirSync(POWERPOINT_DIR, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => cb(null, UPLOAD_DIR),
@@ -22,6 +29,22 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const ok = /^image\/(png|jpe?g|gif|webp|svg\+xml)$/.test(file.mimetype);
     cb(ok ? null : new Error('Only image files are allowed'), ok);
+  },
+});
+const powerpointUpload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => cb(null, POWERPOINT_DIR),
+    filename: (req, file, cb) => {
+      const ext = path.extname(file.originalname).toLowerCase();
+      const base = path.basename(file.originalname, ext).replace(/[^a-z0-9_-]+/gi, '-').replace(/^-|-$/g, '') || 'presentation';
+      cb(null, `${Date.now()}-${base}${ext}`);
+    },
+  }),
+  limits: { fileSize: 250 * 1024 * 1024 },
+  fileFilter: (req, file, cb) => {
+    const ext = path.extname(file.originalname).toLowerCase();
+    const ok = ext === '.ppt' || ext === '.pptx';
+    cb(ok ? null : new Error('Only PowerPoint .ppt and .pptx files are allowed'), ok);
   },
 });
 
@@ -62,8 +85,153 @@ router.post('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/admin/login'));
 });
 
+// ONLYOFFICE fetches the source file itself, so it uses a short-lived signed URL.
+router.get('/powerpoints/raw/:filename', (req, res) => {
+  const filename = path.basename(req.params.filename);
+  const filePath = getPowerPointPath(filename);
+  if (!filePath || !isValidDocumentToken(filename, req.query.token)) return res.status(404).send('Presentation not found');
+  res.sendFile(filePath, { headers: { 'Content-Disposition': 'inline' } });
+});
+
 // Everything below requires login.
 router.use(requireAuth);
+
+router.get('/publish/download', (req, res) => {
+  streamPublishZip(res);
+});
+
+router.get('/powerpoints', (req, res) => {
+  const presentations = fs.readdirSync(POWERPOINT_DIR)
+    .filter(name => /\.(ppt|pptx)$/i.test(name))
+    .map(name => {
+      const filePath = path.join(POWERPOINT_DIR, name);
+      const stats = fs.statSync(filePath);
+      return { name, size: stats.size, modified: stats.mtime };
+    })
+    .sort((a, b) => b.modified - a.modified);
+  const rows = presentations.length
+    ? presentations.map(presentation => `
+      <tr>
+        <td>${escapeHtml(presentation.name.replace(/^\d+-/, ''))}</td>
+        <td class="muted">${(presentation.size / 1024 / 1024).toFixed(1)} MB</td>
+        <td class="muted">${presentation.modified.toLocaleString()}</td>
+        <td class="row">
+          <a class="btn small" href="/admin/powerpoints/view/${encodeURIComponent(presentation.name)}">View in Browser</a>
+          <a class="btn small secondary" href="/admin/powerpoints/download/${encodeURIComponent(presentation.name)}">Download</a>
+        </td>
+      </tr>`).join('')
+    : '<tr><td colspan="4" class="muted">No PowerPoint files have been uploaded yet.</td></tr>';
+
+  res.send(adminLayout({
+    title: 'PowerPoint Library',
+    flash: req.query.msg || '',
+    body: `
+      <p><a href="/admin">&larr; Back to dashboard</a></p>
+      <h1>PowerPoint Library</h1>
+      <div class="card">
+        <h2>Upload a presentation</h2>
+        <p class="muted">Files stay on this computer in the local admin library. View them in the browser with the local presentation engine.</p>
+        <form method="post" action="/admin/powerpoints/upload" enctype="multipart/form-data">
+          <input type="file" name="powerpoint" accept=".ppt,.pptx,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation" required>
+          <div style="margin-top:16px;"><button class="btn" type="submit">Save PowerPoint</button></div>
+        </form>
+      </div>
+      <div class="card">
+        <h2>Saved presentations</h2>
+        <table>
+          <thead><tr><th>File</th><th>Size</th><th>Saved</th><th>Actions</th></tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>
+    `,
+  }));
+});
+
+router.post('/powerpoints/upload', (req, res) => {
+  powerpointUpload.single('powerpoint')(req, res, err => {
+    if (err) return res.redirect('/admin/powerpoints?msg=' + encodeURIComponent(`Upload failed: ${err.message}`));
+    if (!req.file) return res.redirect('/admin/powerpoints?msg=' + encodeURIComponent('Choose a PowerPoint file first.'));
+    res.redirect('/admin/powerpoints?msg=' + encodeURIComponent(`Saved ${req.file.originalname}.`));
+  });
+});
+
+function getPowerPointPath(filename) {
+  const safeName = path.basename(filename);
+  if (safeName !== filename || !/\.(ppt|pptx)$/i.test(safeName)) return null;
+  const filePath = path.join(POWERPOINT_DIR, safeName);
+  return fs.existsSync(filePath) ? filePath : null;
+}
+
+function makeDocumentToken(filename) {
+  const expires = Math.floor(Date.now() / 1000) + 60 * 30;
+  const payload = `${filename}.${expires}`;
+  const secret = process.env.SESSION_SECRET || 'scalewise-dev-secret-change-me';
+  const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return `${expires}.${signature}`;
+}
+
+function isValidDocumentToken(filename, token) {
+  const [expires, signature] = String(token || '').split('.');
+  if (!expires || !signature || Number(expires) < Math.floor(Date.now() / 1000)) return false;
+  const secret = process.env.SESSION_SECRET || 'scalewise-dev-secret-change-me';
+  const expected = crypto.createHmac('sha256', secret).update(`${filename}.${expires}`).digest('hex');
+  return signature.length === expected.length && crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expected));
+}
+
+router.get('/powerpoints/view/:filename', (req, res) => {
+  const filename = path.basename(req.params.filename);
+  const filePath = getPowerPointPath(filename);
+  if (!filePath) return res.status(404).send('Presentation not found');
+  const token = makeDocumentToken(filename);
+  const documentUrl = `${ONLYOFFICE_DOCUMENT_URL_BASE}/admin/powerpoints/raw/${encodeURIComponent(filename)}?token=${token}`;
+  const config = {
+    documentType: 'slide',
+    type: 'desktop',
+    document: {
+      fileType: path.extname(filename).slice(1).toLowerCase(),
+      key: `${filename}-${fs.statSync(filePath).mtimeMs}`.replace(/[^a-zA-Z0-9._-]/g, '_'),
+      title: filename.replace(/^\d+-/, ''),
+      url: documentUrl,
+    },
+    editorConfig: { mode: 'view', lang: 'en-US' },
+  };
+
+  res.send(adminLayout({
+    title: `View: ${filename.replace(/^\d+-/, '')}`,
+    body: `
+      <p><a href="/admin/powerpoints">&larr; Back to PowerPoint Library</a></p>
+      <h1>${escapeHtml(filename.replace(/^\d+-/, ''))}</h1>
+      <div id="onlyoffice-placeholder" class="card"><p>Loading the in-browser presentation viewer...</p><p class="muted">ONLYOFFICE must be running locally at ${escapeHtml(ONLYOFFICE_URL)}.</p></div>
+      <div id="onlyoffice-editor" style="height:calc(100vh - 180px);min-height:560px;"></div>
+      <script src="${escapeHtml(ONLYOFFICE_URL)}/web-apps/apps/api/documents/api.js"></script>
+      <script>
+        const placeholder = document.getElementById('onlyoffice-placeholder');
+        try {
+          new DocsAPI.DocEditor('onlyoffice-editor', ${JSON.stringify(config)});
+          placeholder.remove();
+        } catch (error) {
+          placeholder.innerHTML += '<p class="flash">The browser presentation engine is not running. Start ONLYOFFICE Docs locally, then reload this page.</p>';
+        }
+      </script>
+    `,
+  }));
+});
+
+router.get('/powerpoints/download/:filename', (req, res) => {
+  const filePath = getPowerPointPath(req.params.filename);
+  if (!filePath) return res.status(404).send('Presentation not found');
+  res.download(filePath, path.basename(filePath).replace(/^\d+-/, ''));
+});
+
+router.get('/powerpoints/open/:filename', (req, res) => {
+  const filePath = getPowerPointPath(req.params.filename);
+  if (!filePath) return res.status(404).send('Presentation not found');
+  if (process.platform === 'win32') {
+    spawn('cmd.exe', ['/c', 'start', '', filePath], { detached: true, stdio: 'ignore', windowsHide: true }).unref();
+    return res.redirect('/admin/powerpoints?msg=' + encodeURIComponent('Opening the presentation in its desktop app.'));
+  }
+  res.download(filePath);
+});
 
 router.get('/account', (req, res) => {
   res.send(adminLayout({
@@ -141,6 +309,11 @@ router.get('/', (req, res) => {
           <thead><tr><th>Title</th><th>URL</th><th>Actions</th></tr></thead>
           <tbody>${hiddenRows}</tbody>
         </table>
+      </div>
+      <div class="card">
+        <h2>Publish to GitHub Pages</h2>
+        <p>Download the current public site as a ZIP, then upload its contents to your GitHub Pages repository.</p>
+        <a class="btn" href="/admin/publish/download">Download Publish Package</a>
       </div>
       <div class="card">
         <h2>Add a New Page</h2>

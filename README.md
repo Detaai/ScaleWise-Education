@@ -37,6 +37,7 @@ created. Change its password immediately from **Admin > Account**.
 - Upload images to `images/uploads/` and use their generated path in an image grid.
 - Create and delete additional pages.
 - Session-based admin login with bcrypt password hashing.
+- Local PowerPoint library with an optional in-browser ONLYOFFICE viewer.
 
 The public site keeps the original `.html` URLs, including `/index.html`, so
 existing links continue to work. Pages are rendered dynamically from SQLite on
@@ -58,3 +59,18 @@ Run the built-in smoke tests with:
 ```powershell
 npm.cmd test
 ```
+
+## In-browser PowerPoint viewer
+
+The local admin can store `.ppt` and `.pptx` files under **PowerPoints**. To
+open them inside the browser instead of launching the desktop app, install
+Docker Desktop and start the included ONLYOFFICE container from the project
+folder:
+
+```powershell
+docker compose -f docker-compose.onlyoffice.yml up -d
+```
+
+Then start the CMS and open **Admin > PowerPoints**. The presentation engine
+is local and the original files remain outside the GitHub Pages publish
+package.

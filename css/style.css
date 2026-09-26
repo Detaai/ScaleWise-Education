@@ -398,6 +398,12 @@ img { max-width: 100%; display: block; }
   color: #999;
 }
 
+/* Hidden admin shortcut on the footer copyright symbol */
+.footer-bottom .admin-link {
+  color: inherit;
+  text-decoration: none;
+}
+
 .placeholder-note {
   background-color: #fff8e5;
   border: 1px dashed #d8b74e;

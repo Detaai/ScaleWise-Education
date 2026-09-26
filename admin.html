@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>ScaleWise Admin</title>
+<link rel="stylesheet" href="css/style.css">
+<script>
+  // The admin CMS only exists on the Node server (npm start, port 3000).
+  var ADMIN_URL = window.location.port === '3000'
+    ? '/admin/login'
+    : 'http://localhost:3000/admin/login';
+  window.location.replace(ADMIN_URL);
+</script>
+</head>
+<body>
+  <main class="section">
+    <div class="container" style="text-align:center;">
+      <h1>ScaleWise Admin</h1>
+      <p>Opening the admin login&hellip;</p>
+      <p><a class="btn btn-primary" href="http://localhost:3000/admin/login">Open Admin</a></p>
+      <p>Nothing loading? Start the admin server first: open a terminal in the project folder and run <code>npm start</code>.</p>
+    </div>
+  </main>
+</body>
+</html>

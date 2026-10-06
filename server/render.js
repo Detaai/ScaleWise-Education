@@ -181,7 +181,7 @@ ${sectionsHtml}
       </div>
     </div>
     <div class="footer-bottom">
-      <p>&copy; 2026 ScaleWise Education. All rights reserved. | <a href="legal.html">Privacy Policy &amp; Terms</a></p>
+      <p><a href="admin.html" class="admin-link" aria-label="Admin login">&copy;</a> 2026 ScaleWise Education. All rights reserved. | <a href="legal.html">Privacy Policy &amp; Terms</a></p>
     </div>
   </div>
 </footer>

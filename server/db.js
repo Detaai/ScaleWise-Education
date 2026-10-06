@@ -35,6 +35,40 @@ db.exec(`
     position INTEGER NOT NULL DEFAULT 0,
     content TEXT NOT NULL DEFAULT '{}'
   );
+
+  CREATE TABLE IF NOT EXISTS adoption_animals (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    species TEXT NOT NULL,
+    morph TEXT NOT NULL DEFAULT '',
+    sex TEXT NOT NULL DEFAULT '',
+    age TEXT NOT NULL DEFAULT '',
+    adoption_fee REAL NOT NULL DEFAULT 0,
+    minimum_enclosure TEXT NOT NULL DEFAULT '',
+    diet TEXT NOT NULL DEFAULT '',
+    description TEXT NOT NULL DEFAULT '',
+    image_path TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'available'
+      CHECK (status IN ('available', 'on_hold', 'adopted')),
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
+
+  CREATE TABLE IF NOT EXISTS adoption_applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tracking_code_hash TEXT UNIQUE NOT NULL,
+    animal_id INTEGER REFERENCES adoption_animals(id) ON DELETE SET NULL,
+    animal_name TEXT NOT NULL,
+    applicant_name TEXT NOT NULL,
+    applicant_email TEXT NOT NULL,
+    setup_photo_filename TEXT NOT NULL,
+    message TEXT NOT NULL DEFAULT '',
+    status TEXT NOT NULL DEFAULT 'received'
+      CHECK (status IN ('received', 'under_review', 'need_info', 'approved', 'not_approved', 'completed')),
+    admin_notes TEXT NOT NULL DEFAULT '',
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  );
 `);
 
 // Seed a default admin user on first run.

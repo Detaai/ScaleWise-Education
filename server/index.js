@@ -7,6 +7,7 @@ require('./db'); // initializes and seeds the database on first run
 
 const publicRoutes = require('./routes/public');
 const adminRoutes = require('./routes/admin');
+const adoptionRoutes = require('./routes/adoptions');
 
 const app = express();
 const ROOT = path.join(__dirname, '..');
@@ -43,6 +44,7 @@ app.use('/images', express.static(path.join(ROOT, 'images')));
 app.use('/documents', express.static(path.join(ROOT, 'documents')));
 
 app.use('/admin', adminRoutes);
+app.use('/api/adoptions', adoptionRoutes);
 app.use('/', publicRoutes);
 
 app.use((req, res) => {

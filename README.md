@@ -6,7 +6,7 @@ original files are preserved in `legacy-static-backup/`.
 
 ## Run locally
 
-1. Install Node.js 18 or newer.
+1. Install Node.js 22.13 or newer (the server uses Node's built-in SQLite module).
 2. Copy `.env.example` to `.env`.
 3. Set a strong `SESSION_SECRET`, `ADMIN_USERNAME`, and `ADMIN_PASSWORD` in
    `.env` before the first start.
@@ -38,6 +38,7 @@ created. Change its password immediately from **Admin > Account**.
 - Create and delete additional pages.
 - Session-based admin login with bcrypt password hashing.
 - Local PowerPoint library with an optional in-browser ONLYOFFICE viewer.
+- Adoption portal with searchable animal listings, private enclosure-photo applications, tracking-code status lookup, and administrator listing/status management.
 
 The public site keeps the original `.html` URLs, including `/index.html`, so
 existing links continue to work. Pages are rendered dynamically from SQLite on
@@ -45,7 +46,8 @@ each request.
 
 ## Production notes
 
-- Use a persistent filesystem for `data/scalewise.db` and `images/uploads/`.
+- Use a persistent filesystem for `data/scalewise.db`, `data/adoption-uploads/`, `images/uploads/`, and `images/adoptions/`.
+- The adoption portal's applications and status lookup require the Node/SQLite server. The static GitHub Pages ZIP cannot receive applications or provide application-status lookups.
 - Set `NODE_ENV=production`, a long random `SESSION_SECRET`, and a strong
   initial admin password.
 - Put the Node process behind HTTPS and a reverse proxy such as IIS, nginx, or

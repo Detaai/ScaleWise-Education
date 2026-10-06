@@ -13,10 +13,14 @@ const { streamPublishZip } = require('../publisher');
 const router = express.Router();
 
 const UPLOAD_DIR = path.join(__dirname, '..', '..', 'images', 'uploads');
+const ADOPTION_IMAGE_DIR = path.join(__dirname, '..', '..', 'images', 'adoptions');
+const ADOPTION_PRIVATE_UPLOAD_DIR = path.join(__dirname, '..', '..', 'data', 'adoption-uploads');
 const POWERPOINT_DIR = path.join(__dirname, '..', '..', 'data', 'powerpoints');
 const ONLYOFFICE_URL = process.env.ONLYOFFICE_URL || 'http://localhost:8080';
 const ONLYOFFICE_DOCUMENT_URL_BASE = process.env.ONLYOFFICE_DOCUMENT_URL_BASE || 'http://host.docker.internal:3000';
 fs.mkdirSync(POWERPOINT_DIR, { recursive: true });
+fs.mkdirSync(ADOPTION_IMAGE_DIR, { recursive: true });
+fs.mkdirSync(ADOPTION_PRIVATE_UPLOAD_DIR, { recursive: true });
 const upload = multer({
   storage: multer.diskStorage({
     destination: (req, file, cb) => cb(null, UPLOAD_DIR),
@@ -45,6 +49,26 @@ const powerpointUpload = multer({
     const ext = path.extname(file.originalname).toLowerCase();
     const ok = ext === '.ppt' || ext === '.pptx';
     cb(ok ? null : new Error('Only PowerPoint .ppt and .pptx files are allowed'), ok);
+  },
+});
+const adoptionImageUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, callback) => callback(null, ADOPTION_IMAGE_DIR),
+    filename: (_req, file, callback) => {
+      const extension = path.extname(file.originalname).toLowerCase();
+      callback(null, `${Date.now()}-${crypto.randomBytes(12).toString('hex')}${extension}`);
+    },
+  }),
+  limits: { fileSize: 8 * 1024 * 1024 },
+  fileFilter: (_req, file, callback) => {
+    const allowedTypes = {
+      'image/jpeg': ['.jpg', '.jpeg'],
+      'image/png': ['.png'],
+      'image/webp': ['.webp'],
+    };
+    const extension = path.extname(file.originalname).toLowerCase();
+    const valid = allowedTypes[file.mimetype] && allowedTypes[file.mimetype].includes(extension);
+    callback(valid ? null : new Error('Upload a matching JPG, PNG, or WebP image.'), Boolean(valid));
   },
 });
 
@@ -262,6 +286,249 @@ router.post('/account', (req, res) => {
   res.redirect('/admin/account?saved=1');
 });
 
+// ---------- Adoption portal ----------
+
+const adoptionStatuses = {
+  received: 'Received',
+  under_review: 'Under review',
+  need_info: 'More information requested',
+  approved: 'Approved',
+  not_approved: 'Not approved',
+  completed: 'Completed',
+};
+
+function parseAnimalInput(body) {
+  const animal = {
+    name: String(body.name || '').trim(),
+    species: String(body.species || '').trim(),
+    morph: String(body.morph || '').trim(),
+    sex: String(body.sex || ''),
+    age: String(body.age || '').trim(),
+    minimumEnclosure: String(body.minimumEnclosure || '').trim(),
+    diet: String(body.diet || '').trim(),
+    description: String(body.description || '').trim(),
+    status: String(body.status || ''),
+    adoptionFee: Number(body.adoptionFee),
+  };
+  if (!animal.name || animal.name.length > 120
+      || !animal.species || animal.species.length > 120
+      || animal.morph.length > 160 || animal.age.length > 80
+      || animal.minimumEnclosure.length > 160 || animal.diet.length > 240
+      || animal.description.length > 4000) {
+    return { error: 'Enter a name and species, and keep listing fields within their maximum lengths.' };
+  }
+  if (!['', 'Female', 'Male', 'Unknown'].includes(animal.sex)) {
+    return { error: 'Choose a valid sex value.' };
+  }
+  if (!['available', 'on_hold', 'adopted'].includes(animal.status)) {
+    return { error: 'Choose a valid listing status.' };
+  }
+  if (String(body.adoptionFee || '').trim() === ''
+      || !Number.isFinite(animal.adoptionFee) || animal.adoptionFee < 0) {
+    return { error: 'Enter a non-negative adoption fee.' };
+  }
+  return { animal };
+}
+
+function renderAnimalForm(animal) {
+  const editing = Boolean(animal);
+  const value = key => escapeHtml(animal ? animal[key] : '');
+  const status = animal ? animal.status : 'available';
+  const statusOptions = [
+    ['available', 'Available'],
+    ['on_hold', 'On hold'],
+    ['adopted', 'Adopted'],
+  ].map(([key, label]) => `<option value="${key}"${status === key ? ' selected' : ''}>${label}</option>`).join('');
+  const currentImage = animal && animal.image_path
+    ? `<p><img src="/${escapeHtml(animal.image_path)}" alt="" style="max-width:220px;border-radius:8px;"></p>`
+    : '';
+
+  return `
+    <form method="post" action="/admin/adoptions/animals${editing ? `/${animal.id}` : ''}" enctype="multipart/form-data" class="card">
+      <h2>${editing ? 'Edit animal listing' : 'Add an animal'}</h2>
+      <label>Name</label><input type="text" name="name" maxlength="120" required value="${value('name')}">
+      <label>Species</label><input type="text" name="species" maxlength="120" required value="${value('species')}">
+      <label>Morph / variety</label><input type="text" name="morph" maxlength="160" value="${value('morph')}">
+      <label>Sex</label>
+      <select name="sex">
+        <option value="">Not listed</option>
+        ${['Female', 'Male', 'Unknown'].map(option => `<option value="${option}"${animal && animal.sex === option ? ' selected' : ''}>${option}</option>`).join('')}
+      </select>
+      <label>Age</label><input type="text" name="age" maxlength="80" value="${value('age')}">
+      <label>Adoption fee (USD)</label><input type="number" name="adoptionFee" min="0" step="0.01" required value="${animal ? Number(animal.adoption_fee).toFixed(2) : '0.00'}">
+      <label>Minimum enclosure</label><input type="text" name="minimumEnclosure" maxlength="160" value="${value('minimum_enclosure')}">
+      <label>Diet</label><input type="text" name="diet" maxlength="240" value="${value('diet')}">
+      <label>Description</label><textarea name="description" maxlength="4000">${value('description')}</textarea>
+      <label>Listing status</label><select name="status">${statusOptions}</select>
+      <label>Animal photo ${editing ? '(optional; choose a new image to replace)' : '(optional)'}</label>
+      ${currentImage}
+      <input type="file" name="animalPhoto" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
+      <div class="row" style="margin-top:16px;">
+        <button class="btn" type="submit">${editing ? 'Save listing' : 'Add listing'}</button>
+        <a class="btn secondary" href="/admin/adoptions">Cancel</a>
+      </div>
+    </form>`;
+}
+
+router.get('/adoptions', (req, res) => {
+  const animals = db.prepare(`
+    SELECT id, name, species, status, adoption_fee, updated_at
+    FROM adoption_animals ORDER BY created_at DESC, id DESC
+  `).all();
+  const applications = db.prepare(`
+    SELECT id, animal_name, applicant_name, applicant_email, message, status, created_at
+    FROM adoption_applications ORDER BY created_at DESC, id DESC
+  `).all();
+  const animalRows = animals.length
+    ? animals.map(animal => `
+        <tr>
+          <td>${escapeHtml(animal.name)}</td>
+          <td>${escapeHtml(animal.species)}</td>
+          <td><span class="pill">${escapeHtml(animal.status.replace('_', ' '))}</span></td>
+          <td>${Number(animal.adoption_fee).toFixed(2)}</td>
+          <td><a class="btn small" href="/admin/adoptions/animals/${animal.id}">Edit</a></td>
+        </tr>`).join('')
+    : '<tr><td colspan="5" class="muted">No animal listings yet. Add one above to populate the public adoption catalog.</td></tr>';
+  const applicationRows = applications.length
+    ? applications.map(application => `
+        <tr>
+          <td>
+            ${escapeHtml(application.applicant_name)}<br>
+            <a href="mailto:${encodeURIComponent(application.applicant_email)}">${escapeHtml(application.applicant_email)}</a><br>
+            <span class="muted">${escapeHtml(application.created_at)}</span>
+            <details style="margin-top:8px;">
+              <summary>Application message</summary>
+              <p style="white-space:pre-wrap;">${escapeHtml(application.message || 'No additional message provided.')}</p>
+            </details>
+          </td>
+          <td>${escapeHtml(application.animal_name)}</td>
+          <td>
+            <form method="post" action="/admin/adoptions/applications/${application.id}" class="row">
+              <select name="status" aria-label="Application status">
+                ${Object.entries(adoptionStatuses).map(([key, label]) =>
+                  `<option value="${key}"${application.status === key ? ' selected' : ''}>${label}</option>`).join('')}
+              </select>
+              <button class="btn small" type="submit">Save</button>
+            </form>
+          </td>
+          <td><a class="btn small secondary" href="/admin/adoptions/applications/${application.id}/photo">Enclosure photo</a></td>
+        </tr>`).join('')
+    : '<tr><td colspan="4" class="muted">No adoption applications have been received.</td></tr>';
+
+  res.send(adminLayout({
+    title: 'Adoption Portal',
+    flash: req.query.msg || '',
+    body: `
+      <p><a href="/admin">&larr; Back to dashboard</a></p>
+      <h1>Adoption Portal</h1>
+      <p class="muted">Manage public animal listings and review applications. Applicant details and enclosure photos are visible only to signed-in administrators.</p>
+      ${renderAnimalForm(null)}
+      <div class="card">
+        <h2>Animal listings</h2>
+        <table>
+          <thead><tr><th>Name</th><th>Species</th><th>Status</th><th>Fee (USD)</th><th>Actions</th></tr></thead>
+          <tbody>${animalRows}</tbody>
+        </table>
+      </div>
+      <div class="card">
+        <h2>Applications</h2>
+        <table>
+          <thead><tr><th>Applicant</th><th>Animal</th><th>Status</th><th>Private photo</th></tr></thead>
+          <tbody>${applicationRows}</tbody>
+        </table>
+      </div>
+    `,
+  }));
+});
+
+router.post('/adoptions/animals', (req, res) => {
+  adoptionImageUpload.single('animalPhoto')(req, res, error => {
+    if (error) return res.redirect('/admin/adoptions?msg=' + encodeURIComponent(`Image upload failed: ${error.message}`));
+    const parsed = parseAnimalInput(req.body);
+    if (parsed.error) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.redirect('/admin/adoptions?msg=' + encodeURIComponent(parsed.error));
+    }
+    const animal = parsed.animal;
+    const imagePath = req.file ? `images/adoptions/${req.file.filename}` : '';
+    db.prepare(`
+      INSERT INTO adoption_animals
+        (name, species, morph, sex, age, adoption_fee, minimum_enclosure, diet, description, image_path, status)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `).run(
+      animal.name, animal.species, animal.morph, animal.sex, animal.age,
+      animal.adoptionFee, animal.minimumEnclosure, animal.diet, animal.description,
+      imagePath, animal.status,
+    );
+    res.redirect('/admin/adoptions?msg=' + encodeURIComponent(`Added ${animal.name}.`));
+  });
+});
+
+router.get('/adoptions/animals/:id', (req, res) => {
+  const animal = db.prepare('SELECT * FROM adoption_animals WHERE id = ?').get(req.params.id);
+  if (!animal) return res.status(404).send('Animal listing not found');
+  res.send(adminLayout({
+    title: `Edit ${animal.name}`,
+    flash: req.query.msg || '',
+    body: `<p><a href="/admin/adoptions">&larr; Back to adoption portal</a></p>${renderAnimalForm(animal)}`,
+  }));
+});
+
+router.post('/adoptions/animals/:id', (req, res) => {
+  adoptionImageUpload.single('animalPhoto')(req, res, error => {
+    if (error) return res.redirect(`/admin/adoptions/animals/${req.params.id}?msg=` + encodeURIComponent(`Image upload failed: ${error.message}`));
+    const animal = db.prepare('SELECT * FROM adoption_animals WHERE id = ?').get(req.params.id);
+    if (!animal) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.status(404).send('Animal listing not found');
+    }
+    const parsed = parseAnimalInput(req.body);
+    if (parsed.error) {
+      if (req.file) fs.unlinkSync(req.file.path);
+      return res.redirect(`/admin/adoptions/animals/${animal.id}?msg=` + encodeURIComponent(parsed.error));
+    }
+    const updated = parsed.animal;
+    const imagePath = req.file ? `images/adoptions/${req.file.filename}` : animal.image_path;
+    db.prepare(`
+      UPDATE adoption_animals SET
+        name = ?, species = ?, morph = ?, sex = ?, age = ?, adoption_fee = ?,
+        minimum_enclosure = ?, diet = ?, description = ?, image_path = ?, status = ?,
+        updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now')
+      WHERE id = ?
+    `).run(
+      updated.name, updated.species, updated.morph, updated.sex,
+      updated.age, updated.adoptionFee, updated.minimumEnclosure,
+      updated.diet, updated.description, imagePath, updated.status, animal.id,
+    );
+    if (req.file && animal.image_path) {
+      const previousImage = path.resolve(__dirname, '..', '..', animal.image_path);
+      if (previousImage.startsWith(ADOPTION_IMAGE_DIR + path.sep) && fs.existsSync(previousImage)) fs.unlinkSync(previousImage);
+    }
+    res.redirect('/admin/adoptions?msg=' + encodeURIComponent(`Saved ${updated.name}.`));
+  });
+});
+
+router.post('/adoptions/applications/:id', (req, res) => {
+  if (!Object.prototype.hasOwnProperty.call(adoptionStatuses, req.body.status)) {
+    return res.redirect('/admin/adoptions?msg=' + encodeURIComponent('Choose a valid application status.'));
+  }
+  const result = db.prepare(`
+    UPDATE adoption_applications SET status = ?, updated_at = strftime('%Y-%m-%d %H:%M:%f', 'now') WHERE id = ?
+  `).run(req.body.status, req.params.id);
+  const message = result.changes ? 'Application status updated.' : 'Application not found.';
+  res.redirect('/admin/adoptions?msg=' + encodeURIComponent(message));
+});
+
+router.get('/adoptions/applications/:id/photo', (req, res) => {
+  const application = db.prepare('SELECT setup_photo_filename FROM adoption_applications WHERE id = ?').get(req.params.id);
+  if (!application) return res.status(404).send('Application not found');
+  const filename = path.basename(application.setup_photo_filename);
+  const photoPath = path.join(ADOPTION_PRIVATE_UPLOAD_DIR, filename);
+  if (!fs.existsSync(photoPath)) return res.status(404).send('Enclosure photo not found');
+  res.set('Cache-Control', 'private, no-store');
+  res.sendFile(photoPath);
+});
+
 // ---------- Dashboard ----------
 
 router.get('/', (req, res) => {
@@ -272,8 +539,8 @@ router.get('/', (req, res) => {
       <td class="muted">/${p.slug === 'home' ? '' : p.slug + '.html'}</td>
       <td>${p.in_nav ? 'Yes' : 'No'}</td>
       <td>
-        <a class="btn small" href="/admin/pages/${p.id}">Edit</a>
-        ${p.slug === 'home' ? '' : `<form style="display:inline" method="post" action="/admin/pages/${p.id}/delete" onsubmit="return confirm('Delete this page and all its content?');"><button class="btn small danger" type="submit">Delete</button></form>`}
+        <a class="btn small" href="${p.slug === 'adoption' ? '/admin/adoptions' : `/admin/pages/${p.id}`}">${p.slug === 'adoption' ? 'Manage' : 'Edit'}</a>
+        ${p.slug === 'home' || p.slug === 'adoption' ? '' : `<form style="display:inline" method="post" action="/admin/pages/${p.id}/delete" onsubmit="return confirm('Delete this page and all its content?');"><button class="btn small danger" type="submit">Delete</button></form>`}
       </td>
     </tr>`).join('');
   const hiddenPages = pages.filter(page => !page.in_nav);
@@ -312,8 +579,13 @@ router.get('/', (req, res) => {
       </div>
       <div class="card">
         <h2>Publish to GitHub Pages</h2>
-        <p>Download the current public site as a ZIP, then upload its contents to your GitHub Pages repository.</p>
+        <p>This static ZIP does not include the Node/SQLite adoption application and status services. Use a Node host with persistent storage to run the full adoption portal.</p>
         <a class="btn" href="/admin/publish/download">Download Publish Package</a>
+      </div>
+      <div class="card">
+        <h2>Adoption Portal</h2>
+        <p>Manage available-animal listings, review applications, and update application statuses.</p>
+        <a class="btn" href="/admin/adoptions">Manage Adoptions</a>
       </div>
       <div class="card">
         <h2>Add a New Page</h2>

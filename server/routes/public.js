@@ -1,4 +1,5 @@
 const express = require('express');
+const path = require('path');
 const db = require('../db');
 const { renderPage } = require('../render');
 
@@ -25,13 +26,17 @@ function servePage(slug) {
 router.get(['/', '/index.html'], servePage('home'));
 
 // Hidden admin shortcut: accessible only by direct URL and not in public navigation.
-router.get('/_admin', (req, res) => {
+router.get(['/_admin', '/admin.html'], (req, res) => {
   res.redirect('/admin/login');
+});
+
+router.get('/adoption.html', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', '..', 'adoption.html'));
 });
 
 // All other pages, keeping the original .html URLs so existing links keep working.
 router.get('/:slug.html', (req, res, next) => {
-  if (req.params.slug === '_admin') return next();
+  if (req.params.slug === '_admin' || req.params.slug === 'admin') return next();
   const page = getPageBySlug(req.params.slug);
   if (!page || page.slug === 'home') return next();
   const sections = getSectionsForPage(page.id);

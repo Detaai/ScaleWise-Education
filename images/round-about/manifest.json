@@ -1,3 +1,10 @@
 {
-  "animals": {}
+  "animals": {
+    "Animal 1": [
+      "images/round-about/Animal 1/BallPython-image-1.png"
+    ],
+    "Animal 2": [
+      "images/round-about/Animal 2/Gopher-image-1.png"
+    ]
+  }
 }

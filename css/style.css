@@ -235,6 +235,13 @@ img { max-width: 100%; display: block; }
   padding: 8px;
 }
 
+.photo-image {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
 /* Adoption */
 .adoption-intro {
   padding-bottom: 50px;

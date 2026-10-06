@@ -133,6 +133,8 @@ function renderPage(page, sections) {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="apple-touch-icon" href="/images/logo.png">
 <title>${escapeHtml(page.title)} | ScaleWise Education</title>
 ${page.meta_description ? `<meta name="description" content="${escapeHtml(page.meta_description)}">` : ''}
 <link rel="stylesheet" href="css/style.css">

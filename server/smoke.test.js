@@ -21,6 +21,7 @@ test('public pages render with navigation and migrated content', () => {
   const html = renderPage(page, sections);
 
   assert.match(html, /<title>ScaleWise Education \| ScaleWise Education<\/title>/);
+  assert.match(html, /<link rel="icon" type="image\/png" href="\/images\/logo\.png">/);
   assert.match(html, /Book a Program/);
   assert.match(html, /Hands-on reptile and wildlife education/);
 });

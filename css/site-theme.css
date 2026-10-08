@@ -1,0 +1,273 @@
+/* Public-page styling; admin layouts deliberately do not load this file. */
+body {
+  --max-width: 1180px;
+  background: #faf8f2;
+}
+
+.site-header {
+  border-bottom: 1px solid rgba(184, 160, 100, 0.25);
+}
+
+.nav-wrapper {
+  min-height: 94px;
+}
+
+.logo {
+  font-size: 1.25rem;
+}
+
+.logo img {
+  width: 58px;
+  height: 58px;
+}
+
+.nav-links a {
+  font-size: 0.9rem;
+}
+
+.section {
+  padding: 80px 0;
+}
+
+.stub-page .section {
+  padding-top: 40px;
+}
+
+.stub-page main > .section:first-child > .container > .section-title:first-child {
+  background: var(--color-logo-green);
+  border-radius: 24px;
+  padding: clamp(36px, 6vw, 72px) clamp(24px, 5vw, 60px);
+  margin-bottom: 52px;
+  text-align: left;
+  box-shadow: 0 16px 40px rgba(23, 49, 33, 0.1);
+}
+
+.stub-page main > .section:first-child > .container > .section-title:first-child::before {
+  content: "";
+  display: block;
+  width: 50px;
+  height: 3px;
+  margin-bottom: 24px;
+  background: var(--color-gold);
+}
+
+.stub-page main > .section:first-child > .container > .section-title:first-child h1 {
+  color: #fffaf0;
+  font-size: clamp(2.2rem, 4.5vw, 3.8rem);
+  line-height: 1.12;
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  margin-bottom: 20px;
+}
+
+.stub-page main > .section:first-child > .container > .section-title:first-child p {
+  max-width: 760px;
+  margin: 12px 0 0;
+  color: #e2e7dc;
+  line-height: 1.85;
+}
+
+.section-title h2,
+.adoption-section-heading h2,
+.adoption-hero h1 {
+  font-weight: 400;
+  letter-spacing: -0.025em;
+}
+
+.stub-page .container > h2 {
+  margin-top: 44px;
+  padding-top: 22px;
+  border-top: 1px solid #e7e3d7;
+  font-size: clamp(1.5rem, 2.5vw, 2rem);
+  font-weight: 400;
+}
+
+.stub-page main p,
+.stub-page main li {
+  line-height: 1.85;
+  overflow-wrap: anywhere;
+}
+
+.card,
+.adoption-card,
+.adoption-filters,
+.adoption-empty,
+.educator-bio {
+  background: #fffef9;
+  border: 1px solid #e7e3d7;
+  border-radius: 18px;
+  box-shadow: 0 12px 32px rgba(25, 42, 28, 0.04);
+}
+
+.card,
+.educator-bio {
+  padding: clamp(22px, 3vw, 32px);
+}
+
+.card h3 {
+  font-weight: 400;
+  font-size: 1.4rem;
+}
+
+.photo-image,
+.photo-placeholder {
+  border-radius: 18px;
+}
+
+.btn {
+  border-radius: 999px;
+  font-size: 0.88rem;
+  padding: 13px 23px;
+  transition: background-color 180ms ease, transform 180ms ease;
+  text-align: center;
+}
+
+.btn-primary {
+  background: var(--color-gold);
+  color: var(--color-logo-green);
+}
+
+.btn-primary:hover {
+  background: var(--color-sand);
+  color: var(--color-logo-green);
+  transform: translateY(-2px);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid var(--color-gold);
+  outline-offset: 4px;
+}
+
+#booking-form input:not([type="hidden"]),
+#booking-form select,
+#booking-form textarea {
+  min-height: 44px;
+  border: 1px solid #cbd2c7;
+  border-radius: 10px;
+  background: #faf8f2;
+  color: var(--color-text);
+  font: inherit;
+}
+
+.table-scroll {
+  border: 1px solid #e7e3d7;
+  border-radius: 18px;
+  background: #fffef9;
+}
+
+.table-scroll thead {
+  background: var(--color-sand);
+  color: var(--color-logo-green);
+}
+
+.table-scroll tbody tr:nth-child(even) {
+  background: #faf8f2;
+}
+
+.cta-band {
+  background: radial-gradient(ellipse at top right, var(--color-primary), transparent 65%), var(--color-logo-green);
+  padding: 80px 24px;
+}
+
+.cta-band h2 {
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  line-height: 1.2;
+  font-weight: 400;
+}
+
+.cta-band > p {
+  max-width: 660px;
+  margin: 0 auto 26px;
+  color: #d9e0d4;
+}
+
+.site-footer {
+  background: var(--color-logo-green);
+  padding-top: 52px;
+}
+
+.footer-grid h4 {
+  color: var(--color-gold);
+}
+
+.footer-bottom {
+  border-top-color: rgba(184, 160, 100, 0.25);
+  color: #c5cdbf;
+}
+
+.adoption-portal {
+  background: #faf8f2;
+}
+
+.adoption-hero {
+  background: var(--color-logo-green);
+  padding-top: 64px;
+}
+
+@media (min-width: 1401px) and (max-width: 1800px) {
+  .nav-toggle {
+    display: block;
+  }
+
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    padding: 20px 40px;
+    background: var(--color-logo-green);
+  }
+
+  .nav-links.open {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    white-space: normal;
+  }
+}
+
+@media (max-width: 600px) {
+  .nav-wrapper {
+    min-height: 76px;
+  }
+
+  .logo {
+    font-size: 1rem;
+  }
+
+  .logo img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .section {
+    padding: 48px 0;
+  }
+
+  .stub-page .section {
+    padding-top: 24px;
+  }
+
+  .stub-page main > .section:first-child > .container > .section-title:first-child {
+    border-radius: 18px;
+    margin-bottom: 32px;
+  }
+
+  .cta-band {
+    padding: 56px 20px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn {
+    transition: none;
+  }
+
+  .btn-primary:hover {
+    transform: none;
+  }
+}

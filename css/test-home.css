@@ -1,0 +1,17 @@
+@import url('home.css');
+
+/* Experimental overrides stay here; the main home page does not load this file. */
+.test-home-notice {
+  padding: 8px 20px;
+  background: #ede6d5;
+  color: #493a14;
+  text-align: center;
+  font-size: 0.8rem;
+}
+
+.test-home-notice a {
+  display: inline-block;
+  margin-left: 12px;
+  color: #493a14;
+  text-decoration: underline;
+}

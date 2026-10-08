@@ -34,6 +34,12 @@ router.get('/adoption.html', (req, res) => {
   res.sendFile(path.join(__dirname, '..', '..', 'adoption.html'));
 });
 
+router.get('/test-home.html', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.set('X-Robots-Tag', 'noindex, nofollow');
+  res.sendFile(path.join(__dirname, '..', '..', 'test-home.html'));
+});
+
 // All other pages, keeping the original .html URLs so existing links keep working.
 router.get('/:slug.html', (req, res, next) => {
   if (req.params.slug === '_admin' || req.params.slug === 'admin') return next();

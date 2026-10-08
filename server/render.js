@@ -138,6 +138,8 @@ function renderPage(page, sections) {
 <title>${escapeHtml(page.title)} | ScaleWise Education</title>
 ${page.meta_description ? `<meta name="description" content="${escapeHtml(page.meta_description)}">` : ''}
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/site-theme.css">
+${page.slug === 'home' ? '<link rel="stylesheet" href="css/home.css">' : ''}
 </head>
 <body${bodyClass}>
 
@@ -189,6 +191,7 @@ ${sectionsHtml}
 </footer>
 
 <script src="js/script.js"></script>
+${page.slug === 'home' ? '<script src="js/home.js"></script>' : ''}
 </body>
 </html>
 `;

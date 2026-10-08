@@ -24,6 +24,18 @@ test('public pages render with navigation and migrated content', () => {
   assert.match(html, /<link rel="icon" type="image\/png" href="\/images\/logo\.png">/);
   assert.match(html, /Book a Program/);
   assert.match(html, /Hands-on reptile and wildlife education/);
+  assert.match(html, /href="css\/site-theme\.css"/);
+  assert.match(html, /href="css\/home\.css"/);
+  assert.match(html, /src="js\/home\.js"/);
+});
+
+test('interior pages receive the shared theme without home-only styling', () => {
+  const page = db.prepare('SELECT * FROM pages WHERE slug = ?').get('about');
+  const sections = db.prepare('SELECT * FROM sections WHERE page_id = ? ORDER BY position').all(page.id);
+  const html = renderPage(page, sections);
+  assert.match(html, /href="css\/site-theme\.css"/);
+  assert.doesNotMatch(html, /href="css\/home\.css"/);
+  assert.doesNotMatch(html, /src="js\/home\.js"/);
 });
 
 test('the page builder exposes supported section types', () => {

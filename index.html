@@ -3,9 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/png" href="/images/logo.png">
 <title>ScaleWise Education | Reptile &amp; Conservation Education</title>
 <meta name="description" content="ScaleWise Education provides hands-on reptile and wildlife conservation education programs for kids, adults, schools, and groups.">
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/site-theme.css">
+<link rel="stylesheet" href="css/home.css">
 <style>
   /* Image roundabout */
   .round-about .photo-placeholder.has-image {
@@ -26,7 +29,7 @@
   }
 </style>
 </head>
-<body>
+<body class="test-home">
 
 <header class="site-header">
   <div class="nav-wrapper">
@@ -55,30 +58,46 @@
 
   <!-- Hero: name + logo, short description, CTA -->
   <section class="hero">
-    <h1>ScaleWise Education</h1>
-    <p><strong>Hands-on reptile and wildlife education that builds understanding, respect, and curiosity for the animals of the desert Southwest.</strong></p>
-    <p>ScaleWise Education brings live reptiles and wildlife education directly to schools, libraries, community groups, and other organizations. Our programs focus on helping people understand these animals, learn how to interact with them safely and responsibly, and discover why protecting their natural habitats matters.</p>
-    <a href="contact.html" class="btn btn-primary">Book a Program</a>
-    <a href="contact.html" class="btn btn-outline" style="margin-left:12px;">Contact Us</a>
+    <div class="container test-hero-content">
+      <p class="test-eyebrow">Wildlife education in the desert Southwest</p>
+      <h1>A little curiosity.<br>A whole new <em>connection.</em></h1>
+      <p class="test-hero-description">Meet remarkable animals. Discover their world. Hands-on reptile and wildlife education that inspires understanding, respect, and a love for the wild.</p>
+      <div class="test-hero-actions">
+        <a href="contact.html" class="btn btn-primary">Book an experience <span aria-hidden="true">&rarr;</span></a>
+        <a href="#test-animals" class="btn btn-outline">Meet our animals</a>
+      </div>
+      <p class="test-hero-location"><span aria-hidden="true">&#9679;</span> Mohave County &amp; Kingman, Arizona</p>
+    </div>
+    <div class="test-hero-caption"><span>Discover the extraordinary</span><strong>Closer to nature. Closer to understanding.</strong></div>
   </section>
 
+  <div class="test-values-strip">
+    <span>Learn with curiosity</span><span aria-hidden="true">&#10022;</span>
+    <span>Connect with wildlife</span><span aria-hidden="true">&#10022;</span>
+    <span>Protect what matters</span>
+  </div>
+
   <!-- What makes us different -->
-  <section class="section">
+  <section class="section test-difference">
     <div class="container">
       <div class="section-title">
+        <p class="test-eyebrow">More than a presentation</p>
         <h2>What Makes Us Different</h2>
         <p>At ScaleWise Education, we believe the best way to understand wildlife is to experience it. Our programs combine hands-on learning with responsible animal handling, natural history, and conservation education.</p>
       </div>
       <div class="grid grid-3">
         <div class="card">
+          <span class="test-card-number" aria-hidden="true">01 / DISCOVER</span>
           <h3>Live, Hands-On Learning</h3>
           <p>Whenever appropriate, participants get the opportunity to see and interact with live reptiles while learning about their behavior, biology, and natural history. We make sure every interaction puts the safety and well-being of both the animals and participants first.</p>
         </div>
         <div class="card">
+          <span class="test-card-number" aria-hidden="true">02 / PROTECT</span>
           <h3>Conservation Comes First</h3>
           <p>Our programs go beyond simply teaching people about reptiles. We want participants to understand the important roles these animals play in their ecosystems and why protecting native wildlife and their habitats matters.</p>
         </div>
         <div class="card">
+          <span class="test-card-number" aria-hidden="true">03 / RESPECT</span>
           <h3>Education With Safety in Mind</h3>
           <p>Every program is designed with both people and animals in mind. We teach responsible handling, respectful wildlife interaction, and proper animal care while creating an engaging experience for children and adults alike.</p>
         </div>
@@ -87,23 +106,31 @@
   </section>
 
   <!-- Conservation-focused message -->
-  <section class="section section-alt">
-    <div class="container">
+  <section class="section section-alt test-conservation">
+    <div class="container test-conservation-layout">
+      <div class="test-conservation-photo">
+        <img src="images/round-about/Animal%201/BallPython-image-1.png" alt="A yellow and white ball python resting in its habitat" loading="lazy">
+        <span>Small encounters. Lasting understanding.</span>
+      </div>
+      <div class="test-conservation-copy">
       <div class="section-title">
-        <h2>Our Conservation Message</h2>
+        <p class="test-eyebrow">Learn. Respect. Protect.</p>
+        <h2>A better future starts with understanding.</h2>
         <p>Reptiles are an important part of our ecosystems, but they are often misunderstood or feared. Education can help change that. By teaching people to recognize, respect, and safely coexist with native wildlife, ScaleWise Education hopes to encourage better stewardship of the animals and habitats around us.</p>
         <p>Conservation is not just about protecting animals. It is about protecting the ecosystems they are part of and helping future generations understand why those ecosystems matter.</p>
       </div>
-      <div style="text-align:center;">
+      <div>
         <a href="conservation.html" class="btn btn-primary">Learn About Our Conservation Work</a>
+      </div>
       </div>
     </div>
   </section>
 
   <!-- Photos of reptiles -->
-  <section class="section">
+  <section class="section test-animal-section" id="test-animals">
     <div class="container">
       <div class="section-title">
+        <p class="test-eyebrow">The stars of the experience</p>
         <h2>Meet Some of Our Animals</h2>
         <p>Our programs feature reptiles and other wildlife that help bring the lessons of conservation, biology, and responsible animal care to life.</p>
       </div>
@@ -120,7 +147,8 @@
 
   <!-- Book a Program / Contact CTA -->
   <section class="cta-band">
-    <h2>Ready to Book a Program?</h2>
+    <p class="test-eyebrow">Bring the wild to you</p>
+    <h2>Make your next gathering<br>a little more <em>extraordinary.</em></h2>
     <p>Whether you're a school, library, community organization, youth group, or another organization looking for an educational experience, we'd love to hear from you. Tell us about your group, what you'd like to learn, and we'll help you find the right program.</p>
     <a href="contact.html" class="btn btn-primary">Book a Program</a>
   </section>
@@ -158,123 +186,6 @@
 </footer>
 
 <script src="js/script.js"></script>
-<script>
-// ==================== IMAGE ROUNDABOUT ====================
-// Priority: maximum animal variety -> maximum image variety -> random order.
-(function () {
-  function shuffle(list) {
-    for (var i = list.length - 1; i > 0; i--) {
-      var j = Math.floor(Math.random() * (i + 1));
-      var temp = list[i];
-      list[i] = list[j];
-      list[j] = temp;
-    }
-    return list;
-  }
-
-  // Keeps track of used images between rounds so the roundabout keeps showing new ones.
-  function createImagePicker(animalImages) {
-    var animals = Object.keys(animalImages);
-    var unused = {};
-    var animalRound = [];
-    var lastAnimal = null;
-
-    // Put every image back into the pool, except ones already showing this round.
-    function refill(exclude) {
-      var anyLeft = false;
-      animals.forEach(function (animal) {
-        unused[animal] = shuffle(animalImages[animal].filter(function (src) {
-          return exclude.indexOf(src) === -1;
-        }));
-        if (unused[animal].length) anyLeft = true;
-      });
-      // Fewer unique images than slots: duplicates are unavoidable.
-      if (!anyLeft && exclude.length) refill([]);
-    }
-
-    // Every animal with unused images gets one turn (in random order) before any repeats.
-    function buildAnimalRound() {
-      animalRound = shuffle(animals.filter(function (animal) {
-        return unused[animal].length > 0;
-      }));
-      if (animalRound.length > 1 && animalRound[0] === lastAnimal) {
-        var swap = 1 + Math.floor(Math.random() * (animalRound.length - 1));
-        animalRound[0] = animalRound[swap];
-        animalRound[swap] = lastAnimal;
-      }
-    }
-
-    refill([]);
-
-    return function pickImages(count) {
-      var selected = [];
-      while (selected.length < count) {
-        if (!animalRound.length) buildAnimalRound();
-        if (!animalRound.length) {
-          refill(selected);
-          continue;
-        }
-        var animal = animalRound.shift();
-        selected.push({ animal: animal, src: unused[animal].pop() });
-        lastAnimal = animal;
-      }
-      return selected;
-    };
-  }
-
-  function startRoundAbout(grid) {
-    if (!grid) return;
-
-    var slots = grid.querySelectorAll('.photo-placeholder');
-    var rotateSeconds = parseFloat(grid.dataset.rotateSeconds) || 0;
-    var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    fetch(grid.dataset.manifest)
-      .then(function (response) { return response.json(); })
-      .then(function (manifest) {
-        var animalImages = {};
-        Object.keys(manifest.animals || {}).forEach(function (animal) {
-          if (manifest.animals[animal].length) animalImages[animal] = manifest.animals[animal];
-        });
-        // No images yet: leave the placeholder boxes showing.
-        if (!Object.keys(animalImages).length) return;
-
-        var pickImages = createImagePicker(animalImages);
-
-        function showRound() {
-          pickImages(slots.length).forEach(function (pick, i) {
-            var slot = slots[i];
-            var img = slot.querySelector('img');
-            if (!img) {
-              img = document.createElement('img');
-              slot.textContent = '';
-              slot.classList.add('has-image');
-              slot.appendChild(img);
-            }
-            img.src = encodeURI(pick.src);
-            img.alt = 'Photo of ' + pick.animal + ', one of our program animals';
-          });
-        }
-
-        showRound();
-
-        if (rotateSeconds > 0 && !reduceMotion) {
-          setInterval(function () {
-            grid.classList.add('fading');
-            setTimeout(function () {
-              showRound();
-              grid.classList.remove('fading');
-            }, 600);
-          }, rotateSeconds * 1000);
-        }
-      })
-      .catch(function () {
-        // Manifest missing or unreadable: keep the placeholders.
-      });
-  }
-
-  startRoundAbout(document.getElementById('round-about'));
-})();
-</script>
+<script src="js/home.js"></script>
 </body>
 </html>

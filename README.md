@@ -30,6 +30,29 @@ created. Change its password immediately from **Admin > Account**.
 
 ## CMS features
 
+### Public-page design
+
+`css/site-theme.css` gives public pages the approved forest-green and gold
+design, solid-green title panels, rounded cards, and consistent buttons.
+The faded photo behind the opening text is reserved for the home page.
+It is loaded by the static public pages and the CMS renderer, and exported
+with publish packages. Admin layouts do not load it. Home-specific styling
+lives in `css/home.css`; the approved home content is also stored in the CMS.
+
+### Test home page
+
+Open `http://localhost:3000/test-home.html` while the server is running to preview
+the experimental home page. Edit `test-home.html` for content and
+`css/test-home.css` for design changes; leave the shared `css/style.css`,
+`js/script.js`, and animal images unchanged when experimenting.
+The approved home-page design lives in `css/home.css`, which the test stylesheet
+imports. Future experiments should use overrides in `css/test-home.css` without
+editing `css/home.css`. The main page does not load the test stylesheet.
+The test page is not linked from public navigation or included in the static
+publish package. It requests search engines not to index it, but is not
+password-protected. Approved changes must be applied to the main home page
+separately; there is no automatic promotion.
+
 - Edit page title, metadata, navigation label, and navigation order.
 - Edit migrated page content as raw HTML blocks.
 - Add, edit, delete, and reorder page-builder sections.

@@ -3,11 +3,15 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adopt an Animal | ScaleWise Education</title>
+<meta name="description" content="Meet animals available for adoption through ScaleWise Education and learn about the application process.">
+<link rel="icon" type="image/png" href="/images/logo.png">
+<link rel="apple-touch-icon" href="/images/logo.png">
+<title>Adoptions | ScaleWise Education</title>
 <link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/adoption.css">
+<link rel="stylesheet" href="css/site-theme.css">
 </head>
-<body class="stub-page">
-
+<body>
 <header class="site-header">
   <div class="nav-wrapper">
     <a href="index.html" class="logo">
@@ -22,7 +26,7 @@
       <li><a href="species.html">Species</a></li>
       <li><a href="conservation.html">Conservation</a></li>
       <li><a href="animal-care.html">Animal Care</a></li>
-      <li><a href="adoption.html">Adoption</a></li>
+      <li><a href="adoption.html" class="active">Adoptions</a></li>
       <li><a href="faq.html">FAQ</a></li>
       <li><a href="gallery.html">Gallery</a></li>
       <li><a href="reviews.html">Reviews</a></li>
@@ -32,106 +36,159 @@
   </div>
 </header>
 
-<main>
-  <section class="section adoption-intro">
+<main class="adoption-portal">
+  <section class="adoption-hero">
     <div class="container">
-      <div class="section-title">
-        <h1>Adopt an Animal</h1>
-        <p>Give an animal in need a responsible, prepared home. Review each animal's care needs, then send us your enclosure setup with your application.</p>
+      <p class="adoption-eyebrow">ScaleWise Education · Adoptions</p>
+      <h1>Find your next animal companion</h1>
+      <p>Meet animals looking for a prepared home. Review their information and care needs before applying.</p>
+      <nav class="adoption-tabs" role="tablist" aria-label="Adoption portal">
+        <button class="active" type="button" role="tab" id="tab-available" aria-controls="available-animals" aria-selected="true" data-adoption-view="available">Available Animals</button>
+        <button type="button" role="tab" id="tab-information" aria-controls="adoption-information" aria-selected="false" data-adoption-view="information">Adoption Information</button>
+        <button type="button" role="tab" id="tab-status" aria-controls="application-status" aria-selected="false" data-adoption-view="status">Check Application Status</button>
+      </nav>
+    </div>
+  </section>
+
+  <section class="section adoption-catalog" id="available-animals" role="tabpanel" aria-labelledby="tab-available" data-adoption-page="available">
+    <div class="container">
+      <div class="adoption-section-heading">
+        <div>
+          <h2>Animals currently available</h2>
+          <p>Every application is reviewed individually. Availability can change as applications are considered.</p>
+        </div>
+        <button class="btn btn-primary" type="button" data-adoption-view="information">How adoption works</button>
       </div>
 
-      <p class="placeholder-note"><strong>Before applying:</strong> Every adoption is reviewed individually. A complete, species-appropriate enclosure must be ready before an animal can go home.</p>
+      <div class="adoption-filters" aria-label="Filter animals">
+        <label class="adoption-search">Search
+          <input id="animal-search" type="search" placeholder="Name, species, morph..." autocomplete="off">
+        </label>
+        <label>Species
+          <select id="species-filter"><option value="">All species</option></select>
+        </label>
+        <label>Sex
+          <select id="sex-filter">
+            <option value="">All sexes</option>
+            <option value="female">Female</option>
+            <option value="male">Male</option>
+            <option value="unknown">Unknown / not listed</option>
+          </select>
+        </label>
+        <label>Minimum enclosure
+          <select id="enclosure-filter"><option value="">All enclosures</option></select>
+        </label>
+        <label>Sort
+          <select id="sort-animals">
+            <option value="newest">Newest available</option>
+            <option value="name">Name</option>
+            <option value="species">Species</option>
+          </select>
+        </label>
+      </div>
 
-      <div class="adoption-grid">
-        <article class="adoption-card">
-          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
-          <div class="adoption-card-content">
-            <h2>Available Animal 1</h2>
-            <dl class="animal-details">
-              <div><dt>Name</dt><dd>Add animal name</dd></div>
-              <div><dt>Species</dt><dd>Add species</dd></div>
-              <div><dt>Age</dt><dd>Add age</dd></div>
-              <div><dt>Eats</dt><dd>Add diet</dd></div>
-              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
-            </dl>
-          </div>
+      <p id="animal-count" class="adoption-result-count" aria-live="polite"></p>
+      <div id="animal-list" class="adoption-animal-grid" aria-live="polite"></div>
+      <div id="animal-empty" class="adoption-empty" hidden>
+        <h3>No animals are listed right now</h3>
+        <p>Please check back later or contact us with adoption questions.</p>
+        <a class="btn btn-primary" href="contact.html">Contact ScaleWise Education</a>
+      </div>
+      <div id="animal-error" class="adoption-message adoption-message-error" role="alert" hidden>
+        We couldn't load the available animals. Please refresh the page or try again later.
+      </div>
+      <div id="animal-no-results" class="adoption-empty" hidden>
+        <h3>No animals match those filters</h3>
+        <p>Try changing your search or filters.</p>
+      </div>
+    </div>
+  </section>
+
+  <div id="adoption-information" role="tabpanel" aria-labelledby="tab-information" data-adoption-page="information" hidden>
+  <section class="section section-alt">
+    <div class="container adoption-information">
+      <div>
+        <p class="adoption-eyebrow">Before you apply</p>
+        <h2>Adoption information</h2>
+        <p>Adopting an animal is a long-term commitment. Please review the animal's listed diet and minimum enclosure needs and make sure you are prepared to provide appropriate ongoing care.</p>
+      </div>
+      <div class="adoption-info-list">
+        <article>
+          <span>01</span>
+          <div><h3>Choose an animal</h3><p>Review its species, age, diet, and minimum enclosure information. Contact us if you have questions about a listing.</p></div>
         </article>
-
-        <article class="adoption-card">
-          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
-          <div class="adoption-card-content">
-            <h2>Available Animal 2</h2>
-            <dl class="animal-details">
-              <div><dt>Name</dt><dd>Add animal name</dd></div>
-              <div><dt>Species</dt><dd>Add species</dd></div>
-              <div><dt>Age</dt><dd>Add age</dd></div>
-              <div><dt>Eats</dt><dd>Add diet</dd></div>
-              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
-            </dl>
-          </div>
+        <article>
+          <span>02</span>
+          <div><h3>Prepare the enclosure</h3><p>Have a complete, species-appropriate enclosure ready. Include a clear photo of the full setup with your application.</p></div>
         </article>
-
-        <article class="adoption-card">
-          <div class="adoption-photo photo-placeholder">Animal photo<br>coming soon</div>
-          <div class="adoption-card-content">
-            <h2>Available Animal 3</h2>
-            <dl class="animal-details">
-              <div><dt>Name</dt><dd>Add animal name</dd></div>
-              <div><dt>Species</dt><dd>Add species</dd></div>
-              <div><dt>Age</dt><dd>Add age</dd></div>
-              <div><dt>Eats</dt><dd>Add diet</dd></div>
-              <div><dt>Tank Requirements</dt><dd>Add enclosure size, heating, lighting, and substrate requirements.</dd></div>
-            </dl>
-          </div>
+        <article>
+          <span>03</span>
+          <div><h3>Submit an application</h3><p>Tell us how to reach you and which animal you are interested in. Save the private tracking code shown after submission.</p></div>
+        </article>
+        <article>
+          <span>04</span>
+          <div><h3>Wait for review</h3><p>We review applications individually and may contact you using the email address you provide.</p></div>
         </article>
       </div>
     </div>
   </section>
 
-  <section class="section section-alt">
-    <div class="container">
-      <div class="section-title">
-        <h2>Adoption Application</h2>
-        <p>Fields marked with * are required. Your tank setup photo is reviewed as part of the application.</p>
+  <section class="section adoption-application" id="apply">
+    <div class="container adoption-form-layout">
+      <div>
+        <p class="adoption-eyebrow">Take the next step</p>
+        <h2>Adoption application</h2>
+        <p>Choose an available animal and provide a photo of its prepared enclosure. Fields marked with * are required.</p>
+        <p class="adoption-form-note">Your enclosure photo and application details are used for adoption review and are not displayed publicly.</p>
       </div>
+      <form id="adoption-form" class="card adoption-form" enctype="multipart/form-data">
+        <label for="applicant-name">Your name *</label>
+        <input id="applicant-name" name="name" type="text" autocomplete="name" maxlength="160" required>
 
-      <form id="adoption-form" class="card adoption-form" action="https://api.web3forms.com/submit" method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="access_key" value="08ad688e-8ef3-434a-a8ae-1fd51e6462d1">
-        <input type="hidden" name="subject" value="New Animal Adoption Application - ScaleWise Education">
-        <div class="form-field">
-          <label for="adopter-name"><strong>Your Name *</strong></label>
-          <input type="text" id="adopter-name" name="name" autocomplete="name" required>
+        <label for="applicant-email">Email address *</label>
+        <input id="applicant-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+
+        <label for="application-animal">Animal you want to adopt *</label>
+        <select id="application-animal" name="animalId" required>
+          <option value="">Select an available animal</option>
+        </select>
+
+        <label for="setup-photo">Photo of your enclosure setup *</label>
+        <input id="setup-photo" name="setupPhoto" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" required>
+        <small>Upload a clear JPG, PNG, or WebP image, up to 8 MB.</small>
+
+        <label for="application-message">Anything else we should know?</label>
+        <textarea id="application-message" name="message" rows="4" maxlength="5000" placeholder="Share relevant experience or details about your setup."></textarea>
+
+        <button class="btn btn-primary" type="submit">Send adoption application</button>
+        <p id="application-message-status" class="adoption-message" role="status" aria-live="polite" hidden></p>
+        <div id="application-code" class="application-code" hidden>
+          <h3>Save your private tracking code</h3>
+          <p>Use this code and your application email to check status. We cannot show the code again after you leave this page.</p>
+          <strong id="tracking-code-value"></strong>
         </div>
-        <div class="form-field">
-          <label for="adopter-email"><strong>Email Address *</strong></label>
-          <input type="email" id="adopter-email" name="email" autocomplete="email" required>
-        </div>
-        <div class="form-field">
-          <label for="animal-name"><strong>Animal You Want to Adopt *</strong></label>
-          <select id="animal-name" name="animal_name" required>
-            <option value="">Select an animal</option>
-            <option value="Available Animal 1">Available Animal 1</option>
-            <option value="Available Animal 2">Available Animal 2</option>
-            <option value="Available Animal 3">Available Animal 3</option>
-          </select>
-        </div>
-        <div class="form-field">
-          <label for="tank-photo"><strong>Photo of Your Tank Setup *</strong></label>
-          <input type="file" id="tank-photo" name="tank_photo" accept="image/*" required>
-          <small>Upload a clear photo showing the full enclosure setup.</small>
-        </div>
-        <div class="form-field">
-          <label for="adoption-message"><strong>Anything Else We Should Know?</strong></label>
-          <textarea id="adoption-message" name="message" rows="4" placeholder="Tell us about your experience with this species or your setup."></textarea>
-        </div>
-        <button type="submit" class="btn btn-primary">Send Adoption Application</button>
       </form>
+    </div>
+  </section>
+  </div>
 
-      <div id="adoption-confirmation" class="placeholder-note form-message" hidden>
-        Thank you. Your adoption application has been received, and we will be in touch after reviewing it.
+  <section class="section section-alt" id="application-status" role="tabpanel" aria-labelledby="tab-status" data-adoption-page="status" hidden>
+    <div class="container adoption-status-layout">
+      <div>
+        <p class="adoption-eyebrow">Already applied?</p>
+        <h2>Check application status</h2>
+        <p>Enter the private tracking code shown when you submitted your application and the email address used on that application.</p>
       </div>
-      <div id="adoption-error" class="placeholder-note form-message form-error" hidden>
-        Something went wrong sending your application. Please try again or email us directly.
+      <div>
+        <form id="status-form" class="card adoption-form">
+          <label for="tracking-code">Private tracking code *</label>
+          <input id="tracking-code" name="trackingCode" type="text" autocomplete="off" autocapitalize="characters" minlength="32" maxlength="32" pattern="[A-Fa-f0-9]{32}" required>
+          <label for="status-email">Application email *</label>
+          <input id="status-email" name="email" type="email" autocomplete="email" maxlength="254" required>
+          <button class="btn btn-primary" type="submit">Check status</button>
+          <p id="status-message" class="adoption-message" role="status" aria-live="polite" hidden></p>
+        </form>
+        <div id="status-result" class="adoption-status-result" aria-live="polite" hidden></div>
       </div>
     </div>
   </section>
@@ -146,5 +203,6 @@
 </footer>
 
 <script src="js/script.js"></script>
+<script src="js/adoption.js" defer></script>
 </body>
 </html>

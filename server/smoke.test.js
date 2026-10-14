@@ -27,6 +27,7 @@ test('public pages render with navigation and migrated content', () => {
   assert.match(html, /href="css\/site-theme\.css"/);
   assert.match(html, /href="css\/home\.css"/);
   assert.match(html, /src="js\/home\.js"/);
+  assert.doesNotMatch(html, /href="gallery\.html"/);
 });
 
 test('interior pages receive the shared theme without home-only styling', () => {

@@ -16,7 +16,7 @@ const PAGES = [
   { slug: 'conservation', file: 'conservation.html', navLabel: 'Conservation', order: 4, inNav: true },
   { slug: 'animal-care', file: 'animal-care.html', navLabel: 'Animal Care', order: 5, inNav: true },
   { slug: 'faq', file: 'faq.html', navLabel: 'FAQ', order: 6, inNav: true },
-  { slug: 'gallery', file: 'gallery.html', navLabel: 'Gallery', order: 7, inNav: true },
+  { slug: 'gallery', file: 'gallery.html', navLabel: 'Gallery', order: 7, inNav: false },
   { slug: 'reviews', file: 'reviews.html', navLabel: 'Reviews', order: 8, inNav: true },
   { slug: 'safety', file: 'safety.html', navLabel: 'Safety & Policies', order: 9, inNav: true },
   { slug: 'contact', file: 'contact.html', navLabel: 'Book a Program', order: 10, inNav: true },

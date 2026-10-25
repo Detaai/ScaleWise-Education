@@ -4,11 +4,13 @@ const path = require('path');
 const { ZipArchive } = require('archiver');
 const db = require('./db');
 const { renderPage } = require('./render');
+const { generateAnimalManifest } = require('./animal-images');
 
 const ROOT = path.join(__dirname, '..');
 const PUBLIC_ASSETS = ['css', 'js', 'images', 'documents'];
 
 function buildPublishPackage() {
+  generateAnimalManifest();
   const outputDir = fs.mkdtempSync(path.join(os.tmpdir(), 'scalewise-publish-'));
   const pages = db.prepare('SELECT * FROM pages ORDER BY nav_order ASC, title ASC').all();
 

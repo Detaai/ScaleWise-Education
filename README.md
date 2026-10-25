@@ -39,6 +39,26 @@ It is loaded by the static public pages and the CMS renderer, and exported
 with publish packages. Admin layouts do not load it. Home-specific styling
 lives in `css/home.css`; the approved home content is also stored in the CMS.
 
+The crew cards use `js/home.js` to select a photo on each page load or
+back/forward return, never on a timer. Each card stays matched to the animal
+folder in its original image path, and avoids the previous visit's photo when
+another is available. Add photos to `images/round-about/Animal 1/` (Charlie) or
+`images/round-about/Animal 2/` (Mystery). Filenames can vary and numbering can
+have gaps; PNG, JPG, JPEG, WebP, and GIF files are discovered automatically.
+For Live Server development, run `npm.cmd run dev:photos` alongside Live Server.
+It scans the folders every second and updates the generated photo list when
+photos are added, renamed, or deleted. Refresh the page to see a new selection;
+the watcher does not rotate photos while you are viewing the page.
+Do not edit `images/round-about/manifest.json` manually.
+The list is also regenerated automatically by `npm.cmd start`, `npm.cmd run build`,
+`npm.cmd pack`, and the CMS publish-package export. For a static deployment,
+run `npm.cmd run build` before uploading and include the generated manifest
+alongside the photos. A deployed static site cannot discover files added after
+the build without rebuilding and uploading the updated list.
+An animal with only one photo keeps that photo. CMS and published pages also
+support this behavior when their saved home content includes the crew cards;
+editing `index.html` does not automatically update saved CMS content.
+
 ### Test home page
 
 Open `http://localhost:3000/test-home.html` while the server is running to preview

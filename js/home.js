@@ -2,7 +2,7 @@
   var photos = document.querySelectorAll('.test-crew-card img');
   if (!photos.length) return;
 
-  fetch('images/round-about/manifest.json')
+  fetch('images/round-about/manifest.json', { cache: 'no-cache' })
     .then(function (response) {
       if (!response.ok) throw new Error('Could not load the animal image manifest.');
       return response.json();

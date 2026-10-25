@@ -4,6 +4,10 @@
   "description": "",
   "main": "server/index.js",
   "scripts": {
+    "build": "node server/animal-images.js",
+    "dev:photos": "node server/animal-images.js --watch",
+    "prestart": "node server/animal-images.js",
+    "prepack": "node server/animal-images.js",
     "start": "node server/index.js",
     "test": "node --test"
   },

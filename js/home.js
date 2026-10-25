@@ -1,4 +1,64 @@
 (function () {
+  var photos = document.querySelectorAll('.test-crew-card img');
+  if (!photos.length) return;
+
+  fetch('images/round-about/manifest.json')
+    .then(function (response) {
+      if (!response.ok) throw new Error('Could not load the animal image manifest.');
+      return response.json();
+    })
+    .then(function (manifest) {
+      var animals = manifest.animals;
+      if (!animals || typeof animals !== 'object') {
+        throw new Error('The animal image manifest has no animal photo lists.');
+      }
+
+      var cards = Array.from(photos).map(function (img) {
+        var source = decodeURI(img.getAttribute('src'));
+        var animal = Object.keys(animals).find(function (name) {
+          return source.indexOf('images/round-about/' + name + '/') === 0;
+        });
+        if (!animal || !Array.isArray(animals[animal]) || !animals[animal].length) {
+          throw new Error('No animal photo list found for ' + source);
+        }
+        return { img: img, animal: animal, source: source };
+      });
+
+      function showPhotos() {
+        cards.forEach(function (card) {
+          var key = 'scalewise-crew-photo:' + card.animal;
+          var previous = card.source;
+          try {
+            previous = window.sessionStorage.getItem(key) || previous;
+          } catch (error) {
+            console.warn('Could not read the previous animal photo:', error);
+          }
+          var images = animals[card.animal];
+          var choices = images.filter(function (src) { return src !== previous; });
+          if (!choices.length) choices = images;
+          var selected = choices[Math.floor(Math.random() * choices.length)];
+          card.img.src = encodeURI(selected);
+          card.source = selected;
+          try {
+            window.sessionStorage.setItem(key, selected);
+          } catch (error) {
+            console.warn('Could not remember the animal photo:', error);
+          }
+        });
+      }
+
+      showPhotos();
+      window.addEventListener('pageshow', function (event) {
+        // Back/forward navigation can restore the page without running scripts again.
+        if (event.persisted) showPhotos();
+      });
+    })
+    .catch(function (error) {
+      console.error('Crew photo rotation failed:', error);
+    });
+})();
+
+(function () {
   var grid = document.getElementById('round-about');
   if (!grid) return;
 

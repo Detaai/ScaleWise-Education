@@ -55,6 +55,13 @@ The list is also regenerated automatically by `npm.cmd start`, `npm.cmd run buil
 run `npm.cmd run build` before uploading and include the generated manifest
 alongside the photos. A deployed static site cannot discover files added after
 the build without rebuilding and uploading the updated list.
+For GitHub Pages, `.github/workflows/pages.yml` scans the photo folders and
+deploys the static site on every push to `main`. In the repository's
+**Settings > Pages > Build and deployment**, set **Source** to **GitHub Actions**
+(instead of **Deploy from a branch**) to use this workflow. Push the workflow,
+generator, and photos together. No dependency installation or manual photo-list
+updates are needed for this deployment. The Node CMS, database, and private
+adoption uploads are not included in the generated Pages artifact.
 An animal with only one photo keeps that photo. CMS and published pages also
 support this behavior when their saved home content includes the crew cards;
 editing `index.html` does not automatically update saved CMS content.
